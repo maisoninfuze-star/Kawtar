@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Kawtar — Menu (impression)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+  /* ===================== PRINT GEOMETRY =====================
+     Trim: 8.5 x 11 in (US Letter, portrait)
+     Bleed: 0.125 in each side  ->  media 8.75 x 11.25 in
+     Safe margin: 0.3 in inside trim  ->  content inset 0.425 in from media edge
+  */
+  @page { size: 8.75in 11.25in; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { background: #0c0a07; }
+
+  :root {
+    --paper:   #0c0a07;   /* page — near-black */
+    --paper-2: #17120a;   /* panel / box fill */
+    --ink:     #e7cb83;   /* body & item names — light gold (no cream/beige) */
+    --ink-2:   #b1904a;   /* muted — deep gold */
+    --terra:   #d4af5a;   /* accent (eyebrow / prices / script) — gold */
+    --terra-d: #c8a044;   /* deeper gold (subheads) */
+    --gold:    #c9a24d;   /* gold rules & frame */
+    --gold-lt: #e8cf88;   /* bright gold */
+    --green:   #c9a24d;   /* diamonds — gold (black & gold) */
+    --line:    rgba(202,162,77,.34);  /* gold hairline */
+    --bleed:   0.125in;
+    --safe:    0.425in;   /* bleed + 0.3 safe */
+  }
+
+  .sheet {
+    position: relative;
+    width: 8.75in; height: 11.25in;
+    overflow: hidden;
+    background: var(--paper);
+    page-break-after: always;
+    font-family: 'EB Garamond', Georgia, serif;
+    color: var(--ink);
+  }
+  .sheet:last-child { page-break-after: auto; }
+
+  /* warm paper grain + faint vignette */
+  /* subtle warm texture via a cheap vector dot-grid (no full-page raster) */
+  .grain {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .6;
+    background-image: radial-gradient(rgba(201,162,77,.05) 0.5px, transparent 0.6px);
+    background-size: 7px 7px;
+  }
+  .vignette {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(115% 82% at 50% 38%, rgba(201,162,77,.07), transparent 60%);
+  }
+
+  /* crop marks — hairlines hugging the trim corners, sitting in the bleed */
+  .crops i { position: absolute; background: #b8944a; z-index: 50; }
+  .crops .v { width: .5pt; height: .09in; }
+  .crops .h { height: .5pt; width: .09in; }
+  .crops .tl-v { left: var(--bleed); top: 0; }
+  .crops .tl-h { top: var(--bleed); left: 0; }
+  .crops .tr-v { right: var(--bleed); top: 0; }
+  .crops .tr-h { top: var(--bleed); right: 0; }
+  .crops .bl-v { left: var(--bleed); bottom: 0; }
+  .crops .bl-h { bottom: var(--bleed); left: 0; }
+  .crops .br-v { right: var(--bleed); bottom: 0; }
+  .crops .br-h { bottom: var(--bleed); right: 0; }
+
+  /* ornamental frame just inside the trim */
+  .frame {
+    position: absolute; inset: 0.34in; z-index: 1;
+    border: 1.2pt solid var(--gold);
+  }
+  .frame::after {
+    content: ""; position: absolute; inset: 3.2pt;
+    border: 0.5pt solid var(--line);
+  }
+  .corner { position: absolute; width: .42in; height: .42in; z-index: 2; color: var(--terra); }
+  .corner svg { width: 100%; height: 100%; }
+  .c-tl { top: .24in; left: .24in; }
+  .c-tr { top: .24in; right: .24in; transform: scaleX(-1); }
+  .c-bl { bottom: .24in; left: .24in; transform: scaleY(-1); }
+  .c-br { bottom: .24in; right: .24in; transform: scale(-1,-1); }
+
+  .content { position: absolute; inset: var(--safe); z-index: 5;
+    display: flex; flex-direction: column; }
+
+  /* ---------- section header ---------- */
+  .eyebrow {
+    font-family: 'Marck Script', cursive; font-size: 25px; color: var(--terra);
+    text-align: center; line-height: 1;
+  }
+  .sec-title {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600;
+    font-size: 52px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--gold-lt); text-align: center; line-height: 1; margin-top: 4px;
+  }
+  .divider { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 12px 0 4px; }
+  .divider .ln { width: 78px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .divider .ln.r { background: linear-gradient(270deg, transparent, var(--gold)); }
+  .divider .star { width: 15px; height: 15px; color: var(--terra); }
+  .divider .star svg { width: 100%; height: 100%; }
+
+  /* ---------- item rows ---------- */
+  .list { margin-top: 8px; }
+  .list.two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  .item { padding: 9px 0; border-bottom: 0.5pt dotted rgba(160,60,40,.22); }
+  .item:last-child { border-bottom: none; }
+  .item-top { display: flex; align-items: baseline; gap: 8px; }
+  .item-name {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 18.5px;
+    color: var(--ink); letter-spacing: .01em; white-space: nowrap;
+  }
+  .item-name .q { font-family: 'EB Garamond', serif; font-style: italic; font-weight: 400;
+    font-size: 13px; color: var(--ink-2); }
+  .lead { flex: 1; border-bottom: 0.6pt dotted var(--gold); transform: translateY(-4px); min-width: 14px; }
+  .price { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 18px; color: var(--terra); white-space: nowrap; }
+  .price .cur { font-size: 12px; }
+  .price.dual .combo { font-size: 12.5px; color: var(--ink-2); font-weight: 500; margin-left: 4px; }
+  .desc { font-family: 'EB Garamond', serif; font-style: italic; font-weight: 400;
+    font-size: 12.5px; line-height: 1.35; color: var(--ink-2); margin-top: 3px; max-width: 92%; }
+
+  .subhead {
+    display: flex; align-items: center; gap: 9px; margin: 14px 0 2px;
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 17px;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--terra-d);
+  }
+  .subhead .dot { width: 7px; height: 7px; background: var(--green); transform: rotate(45deg); }
+  .subhead .note { font-family: 'EB Garamond', serif; font-style: italic; font-weight: 400;
+    font-size: 11.5px; letter-spacing: .02em; text-transform: none; color: var(--ink-2); }
+
+  /* extras / suppléments box */
+  .box {
+    margin-top: 14px; border: 0.8pt solid var(--line); background: rgba(201,162,77,.07);
+    padding: 9px 16px; display: flex; align-items: center; justify-content: center;
+    gap: 26px; flex-wrap: wrap;
+  }
+  .box .lbl { font-family: 'Marck Script', cursive; font-size: 19px; color: var(--terra); }
+  .box .x { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: .04em; }
+  .box .x i { font-style: normal; color: var(--terra); margin-left: 5px; }
+
+  /* section hero — Moroccan arch framed photo, warmly toned */
+  .hero-arch { position: relative; width: 100%; }
+  .arch {
+    width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block;
+    clip-path: url(#arch);
+    filter: saturate(1.04) contrast(1.03);
+  }
+  .arch-wrap { position: relative; padding: 6px; }
+  .arch-wrap::before {
+    content: ""; position: absolute; inset: 0; clip-path: url(#arch);
+    background: var(--gold); z-index: 0;
+  }
+  .arch { position: relative; z-index: 1; }
+  .cap { text-align: center; font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 12px; color: var(--ink-2); margin-top: 7px; }
+  .hero-pair { display: flex; gap: 20px; justify-content: center; max-width: 5.3in; margin: 0 auto; }
+  .hero-pair .hero-arch { flex: 1; min-width: 0; }
+  .hero-pair .cap { font-size: 11px; }
+
+  .spacer { flex: 1; }
+
+  .foot { text-align: center; padding-top: 8px; }
+  .foot .name { font-family: 'Cormorant Garamond', serif; font-weight: 600; letter-spacing: .28em;
+    text-transform: uppercase; font-size: 12px; color: var(--terra); }
+  .foot .sub { font-family: 'EB Garamond', serif; font-size: 10.5px; letter-spacing: .1em; color: var(--ink-2); margin-top: 3px; }
+
+  .contact { display: flex; justify-content: center; gap: 44px; text-align: center; }
+  .contact-col { max-width: 2.1in; }
+  .ct-h { font-family: 'Marck Script', cursive; font-size: 19px; color: var(--terra); margin-bottom: 5px; }
+  .ct-b { font-family: 'EB Garamond', serif; font-size: 12px; line-height: 1.55; color: var(--ink-2); }
+  .ct-b a { color: var(--ink-2); text-decoration: none; }
+  .sizes { display: flex; gap: 34px; margin-top: 8px; padding-left: 2px; font-family: 'Cormorant Garamond', serif; font-size: 16.5px; }
+  .sizes b { color: var(--ink); font-weight: 600; }
+  .sizes u { color: var(--terra); font-weight: 600; text-decoration: none; margin-left: 6px; }
+
+  /* ===================== COVER ===================== */
+  .cover { background: var(--paper); }
+  .cover .content { align-items: center; justify-content: center; text-align: center; }
+  .cover-brand { width: 2.6in; height: auto; margin: 0 auto; }
+  .cover-welcome { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 78px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--gold-lt); line-height: .95; margin-top: 8px; }
+  .cover-script { font-family: 'Marck Script', cursive; font-size: 40px; color: var(--terra); margin-top: 2px; }
+  .cover-tag { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 21px;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin-top: 18px; }
+  .cover-lede { font-family: 'EB Garamond', serif; font-style: italic; font-size: 15.5px; line-height: 1.7;
+    color: var(--ink-2); max-width: 4.6in; margin: 16px auto 0; }
+  .cover-arch { width: 3.5in; margin: 26px auto 0; }
+  .cover-logo { width: 3.2in; margin: 0 auto 52px; padding: 7px; background: #160f09;
+    border: 1.4pt solid var(--gold); box-shadow: 0 14px 34px -16px rgba(0,0,0,.5); }
+  .cover-logo img { display: block; width: 100%; border: 0.5pt solid rgba(202,162,77,.35); }
+  .menu-word { display: inline-flex; align-items: center; gap: 14px; margin-top: 26px;
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 26px; letter-spacing: .4em;
+    text-transform: uppercase; color: var(--gold-lt); }
+  .menu-word .ln { width: 46px; height: 1px; background: var(--gold); }
+
+  .teapot { width: 74px; height: 74px; color: var(--terra); margin: 0 auto; }
+  .teapot svg { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+
+<!-- ==== shared SVG defs ==== -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <clipPath id="arch" clipPathUnits="objectBoundingBox">
+      <path d="M0,1 L0,0.46 C0,0.2 0.2,0.03 0.5,0 C0.8,0.03 1,0.2 1,0.46 L1,1 Z"/>
+    </clipPath>
+  </defs>
+</svg>
+
+<!-- reusable markup snippets are inlined per sheet below -->
+
+<!-- ============================================================= PAGE 1 · COVER -->
+<section class="sheet cover">
+  <div class="grain"></div><div class="vignette"></div>
+  <div class="crops"><i class="v tl-v"></i><i class="h tl-h"></i><i class="v tr-v"></i><i class="h tr-h"></i><i class="v bl-v"></i><i class="h bl-h"></i><i class="v br-v"></i><i class="h br-h"></i></div>
+  <div class="frame"></div>
+  <span class="corner c-tl"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 44 V10 H40"/><path d="M14 30 a16 16 0 0 1 16-16" /><circle cx="17" cy="17" r="2.6" fill="currentColor" stroke="none"/></svg></span>
+  <span class="corner c-tr"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 44 V10 H40"/><path d="M14 30 a16 16 0 0 1 16-16" /><circle cx="17" cy="17" r="2.6" fill="currentColor" stroke="none"/></svg></span>
+  <span class="corner c-bl"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 44 V10 H40"/><path d="M14 30 a16 16 0 0 1 16-16" /><circle cx="17" cy="17" r="2.6" fill="currentColor" stroke="none"/></svg></span>
+  <span class="corner c-br"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 44 V10 H40"/><path d="M14 30 a16 16 0 0 1 16-16" /><circle cx="17" cy="17" r="2.6" fill="currentColor" stroke="none"/></svg></span>
+
+  <div class="content">
+    <div class="cover-logo"><img src="../assets/brand/kawtar-lockup.png" alt="Kawtar Café · Bistro"></div>
+    <div class="cover-welcome">Bienvenue</div>
+    <div class="cover-script">chez Kawtar</div>
+    <div class="cover-tag">Saveurs marocaines authentiques</div>
+    <p class="cover-lede">Au cœur de Laval, une cuisine marocaine faite maison, avec passion&nbsp;— tajines mijotés, pâtisseries pliées à la main et thé à la menthe versé de haut. Un voyage de saveurs vous attend.</p>
+    <div class="menu-word"><span class="ln"></span>Menu<span class="ln"></span></div>
+  </div>
+</section>
+
+<!-- ============================================================= PAGE 2 · PETIT DÉJEUNER -->
+<section class="sheet">
+  <div class="grain"></div><div class="vignette"></div>
+  <div class="crops"><i class="v tl-v"></i><i class="h tl-h"></i><i class="v tr-v"></i><i class="h tr-h"></i><i class="v bl-v"></i><i class="h bl-h"></i><i class="v br-v"></i><i class="h br-h"></i></div>
+  <div class="frame"></div>
+  <div class="content">
+    <div class="eyebrow">Pour bien commencer</div>
+    <div class="sec-title">Petit Déjeuner</div>
+    <div class="divider"><span class="ln"></span><span class="star"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg></span><span class="ln r"></span></div>
+
+    <div class="subhead"><span class="dot"></span>Les Déjeuners</div>
+    <div class="list">
+      <div class="item"><div class="item-top"><span class="item-name">Déjeuner Fassi</span><span class="lead"></span><span class="price">18,99<span class="cur"> $</span></span></div><div class="desc">Œufs, viande séchée, fromage frais, olives noires, pain maison &amp; thé marocain.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Déjeuner Beldi</span><span class="lead"></span><span class="price">16,99<span class="cur"> $</span></span></div><div class="desc">Msemen, harcha, fromage frais, miel, olives, thé marocain &amp; jus d'orange.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Déjeuner Gourmand</span><span class="lead"></span><span class="price">20,99<span class="cur"> $</span></span></div><div class="desc">Œufs, champignons sautés, mozzarella, pommes de terre grillées, fromage frais, olives noires &amp; thé ou café.</div></div>
+    </div>
+
+    <div class="subhead"><span class="dot"></span>Mkila <span class="note">— œufs, à la poêle</span></div>
+    <div class="list">
+      <div class="item"><div class="item-top"><span class="item-name">Mkila</span><span class="lead"></span><span class="price">15,99<span class="cur"> $</span></span></div><div class="desc">Œufs, tomates fraîches &amp; épices marocaines.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Mkila aux Crevettes</span><span class="lead"></span><span class="price">19,99<span class="cur"> $</span></span></div><div class="desc">Œufs, crevettes, tomates, olives, fromage frais &amp; thé marocain.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Mkila Kefta</span><span class="lead"></span><span class="price">16,99<span class="cur"> $</span></span></div><div class="desc">Œufs, kefta, tomates &amp; pain maison.</div></div>
+    </div>
+
+    <div class="box">
+      <span class="lbl">Suppléments</span>
+      <span class="x">Hrira <i>6,49 $</i></span>
+      <span class="x">Hsouwa <i>5,99 $</i></span>
+      <span class="x">Bissara <i>6,99 $</i></span>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="hero-arch" style="max-width:3.3in; margin:0 auto;">
+      <div class="arch-wrap"><img class="arch" src="../assets/menu-photos/breakfast.png" alt=""></div>
+      <div class="cap">Msemen, harcha &amp; thé à la menthe — le matin à la marocaine.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="foot"><div class="name">Bistro Kawtar</div><div class="sub">Laval · Saveurs marocaines</div></div>
+  </div>
+</section>
+
+<!-- ============================================================= PAGE 3 · ENTRÉES -->
+<section class="sheet">
+  <div class="grain"></div><div class="vignette"></div>
+  <div class="crops"><i class="v tl-v"></i><i class="h tl-h"></i><i class="v tr-v"></i><i class="h tr-h"></i><i class="v bl-v"></i><i class="h bl-h"></i><i class="v br-v"></i><i class="h br-h"></i></div>
+  <div class="frame"></div>
+  <div class="content">
+    <div class="eyebrow">Pour ouvrir l'appétit</div>
+    <div class="sec-title">Entrées</div>
+    <div class="divider"><span class="ln"></span><span class="star"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg></span><span class="ln r"></span></div>
+    <div class="list">
+      <div class="item"><div class="item-top"><span class="item-name">Zaalouk</span><span class="lead"></span><span class="price">7,99<span class="cur"> $</span></span></div><div class="desc">Aubergines, tomates, ail, cumin, paprika &amp; coriandre.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Taktouka</span><span class="lead"></span><span class="price">8,99<span class="cur"> $</span></span></div><div class="desc">Poivrons grillés, tomates, ail, cumin &amp; paprika.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Salade Marocaine</span><span class="lead"></span><span class="price">7,99<span class="cur"> $</span></span></div><div class="desc">Tomates, oignons, poivrons verts, persil &amp; vinaigrette maison.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Hrira</span><span class="lead"></span><span class="price">6,49<span class="cur"> $</span></span></div><div class="desc">Tomates, lentilles, pois chiches, viande &amp; épices marocaines.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Bissara</span><span class="lead"></span><span class="price">7,99<span class="cur"> $</span></span></div><div class="desc">Purée de fèves, ail, cumin &amp; huile d'olive.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Pastilla au Poulet</span><span class="lead"></span><span class="price">8,99<span class="cur"> $</span></span></div><div class="desc">Poulet, amandes, oignons caramélisés, cannelle &amp; feuille de brick.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Pastilla au Poisson</span><span class="lead"></span><span class="price">9,99<span class="cur"> $</span></span></div><div class="desc">Crevettes, calamars, poisson, vermicelles &amp; épices marocaines.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Cigare Marocain</span><span class="lead"></span><span class="price">5,99<span class="cur"> $</span></span></div><div class="desc">Au choix : viande hachée ou poulet.</div></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="hero-arch" style="max-width:3.4in; margin:0 auto;">
+      <div class="arch-wrap"><img class="arch" src="../assets/menu-photos/mezze.png" alt=""></div>
+      <div class="cap">Mezze à partager — zaalouk, taktouka &amp; pain maison.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="foot"><div class="name">Bistro Kawtar</div><div class="sub">Laval · Saveurs marocaines</div></div>
+  </div>
+</section>
+
+<!-- ============================================================= PAGE 4 · PLATS -->
+<section class="sheet">
+  <div class="grain"></div><div class="vignette"></div>
+  <div class="crops"><i class="v tl-v"></i><i class="h tl-h"></i><i class="v tr-v"></i><i class="h tr-h"></i><i class="v bl-v"></i><i class="h bl-h"></i><i class="v br-v"></i><i class="h br-h"></i></div>
+  <div class="frame"></div>
+  <div class="content">
+    <div class="eyebrow">Le cœur de la table</div>
+    <div class="sec-title">Tajines &amp; Couscous</div>
+    <div class="divider"><span class="ln"></span><span class="star"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg></span><span class="ln r"></span></div>
+
+    <div class="subhead"><span class="dot"></span>Tajines mijotés</div>
+    <div class="list">
+      <div class="item"><div class="item-top"><span class="item-name">Tajine Poulet, Olives &amp; Frites</span><span class="lead"></span><span class="price">21,99<span class="cur"> $</span></span></div><div class="desc">Poulet, olives, citron confit, oignons, épices marocaines &amp; frites.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Tajine de Veau, Artichauts &amp; Petits Pois</span><span class="lead"></span><span class="price">24,99<span class="cur"> $</span></span></div><div class="desc">Veau, artichauts, petits pois, oignons &amp; épices marocaines.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Tajine de Veau aux Oignons &amp; Raisins Secs</span><span class="lead"></span><span class="price">21,99<span class="cur"> $</span></span></div><div class="desc">Veau, oignons confits, raisins secs &amp; épices marocaines.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Tajine Bouzroug</span><span class="lead"></span><span class="price">18,99<span class="cur"> $</span></span></div><div class="desc">Moules, tomates, ail, herbes fraîches &amp; épices marocaines.</div></div>
+    </div>
+
+    <div class="subhead"><span class="dot"></span>Couscous <span class="note">— vendredi · samedi · dimanche</span></div>
+    <div class="list">
+      <div class="item"><div class="item-top"><span class="item-name">Couscous au Veau</span><span class="lead"></span><span class="price">24,99<span class="cur"> $</span></span></div><div class="desc">Veau, légumes de saison, pois chiches &amp; semoule.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Couscous au Poulet</span><span class="lead"></span><span class="price">22,99<span class="cur"> $</span></span></div><div class="desc">Poulet, légumes de saison, pois chiches, tfaya &amp; semoule.</div></div>
+    </div>
+    <div class="box">
+      <span class="lbl">Extras</span>
+      <span class="x">Tfaya <i>3,99 $</i></span>
+      <span class="x">Lben <i>2,99 $</i></span>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="hero-pair">
+      <div class="hero-arch">
+        <div class="arch-wrap"><img class="arch" src="../assets/menu-photos/tajine.png" alt=""></div>
+        <div class="cap">Tajine mijoté sur braises douces.</div>
+      </div>
+      <div class="hero-arch">
+        <div class="arch-wrap"><img class="arch" src="../assets/menu-photos/couscous.png" alt=""></div>
+        <div class="cap">Couscous royale, la fin de semaine.</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="foot"><div class="name">Bistro Kawtar</div><div class="sub">Laval · Saveurs marocaines</div></div>
+  </div>
+</section>
+
+<!-- ============================================================= PAGE 5 · SANDWICH -->
+<section class="sheet">
+  <div class="grain"></div><div class="vignette"></div>
+  <div class="crops"><i class="v tl-v"></i><i class="h tl-h"></i><i class="v tr-v"></i><i class="h tr-h"></i><i class="v bl-v"></i><i class="h bl-h"></i><i class="v br-v"></i><i class="h br-h"></i></div>
+  <div class="frame"></div>
+  <div class="content">
+    <div class="eyebrow">Sur le pouce</div>
+    <div class="sec-title">Sandwichs</div>
+    <div class="divider"><span class="ln"></span><span class="star"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg></span><span class="ln r"></span></div>
+    <p style="text-align:center; font-family:'EB Garamond',serif; font-style:italic; font-size:14px; color:var(--ink-2); margin-top:-2px;">Servis en pain maison. En combo : ajoutez frites &amp; boisson.</p>
+
+    <div class="list" style="margin-top:18px;">
+      <div class="item" style="padding:16px 0;"><div class="item-top"><span class="item-name">Poulet</span><span class="lead"></span><span class="price dual">9,99<span class="cur"> $</span><span class="combo">/ combo 13,99 $</span></span></div><div class="desc">Poitrines de poulet grillées, tomates, oignons, laitue &amp; fromage.</div></div>
+      <div class="item" style="padding:16px 0;"><div class="item-top"><span class="item-name">Viande Hachée</span><span class="lead"></span><span class="price dual">9,99<span class="cur"> $</span><span class="combo">/ combo 13,99 $</span></span></div><div class="desc">Viande hachée épicée, tomates, oignons, laitue, olives tranchées &amp; fromage.</div></div>
+      <div class="item" style="padding:16px 0;"><div class="item-top"><span class="item-name">Thon</span><span class="lead"></span><span class="price dual">8,99<span class="cur"> $</span><span class="combo">/ combo 12,99 $</span></span></div><div class="desc">Thon frais, tomates, carottes râpées, laitue, oignon, patates, olives, mayonnaise &amp; harissa.</div></div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="hero-arch" style="max-width:3.5in; margin:0 auto;">
+      <div class="arch-wrap"><img class="arch" src="../assets/menu-photos/sandwich.png" alt=""></div>
+      <div class="cap">Grillé minute, servi en pain maison.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="foot"><div class="name">Bistro Kawtar</div><div class="sub">Laval · Saveurs marocaines</div></div>
+  </div>
+</section>
+
+<!-- ============================================================= PAGE 6 · DESSERTS -->
+<section class="sheet">
+  <div class="grain"></div><div class="vignette"></div>
+  <div class="crops"><i class="v tl-v"></i><i class="h tl-h"></i><i class="v tr-v"></i><i class="h tr-h"></i><i class="v bl-v"></i><i class="h bl-h"></i><i class="v br-v"></i><i class="h br-h"></i></div>
+  <div class="frame"></div>
+  <div class="content">
+    <div class="eyebrow">Douceurs</div>
+    <div class="sec-title">Desserts</div>
+    <div class="divider"><span class="ln"></span><span class="star"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg></span><span class="ln r"></span></div>
+    <div class="list">
+      <div class="item"><div class="item-top"><span class="item-name">Msemen</span><span class="lead"></span><span class="price">2,99<span class="cur"> $</span></span></div><div class="desc">Crêpe feuilletée marocaine, dorée à la poêle.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Harcha</span><span class="lead"></span><span class="price">2,99<span class="cur"> $</span></span></div><div class="desc">Galette de semoule, croustillante &amp; tendre.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Gâteaux Marocains</span><span class="lead"></span><span class="price">5,99<span class="cur"> $</span></span></div><div class="desc">Assortiment de pâtisseries aux amandes &amp; miel.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Cheesecake</span><span class="lead"></span><span class="price">8,99<span class="cur"> $</span></span></div><div class="desc">Onctueux, sur base sablée.</div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Tiramisu</span><span class="lead"></span><span class="price">7,99<span class="cur"> $</span></span></div><div class="desc">Mascarpone, café &amp; cacao.</div></div>
+    </div>
+    <div class="box">
+      <span class="lbl">Extras</span>
+      <span class="x">Miel <i>1,00 $</i></span>
+      <span class="x">Fromage <i>1,00 $</i></span>
+      <span class="x">Nutella <i>1,50 $</i></span>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="hero-arch" style="max-width:3.3in; margin:0 auto;">
+      <div class="arch-wrap"><img class="arch" src="../assets/menu-photos/desserts.png" alt=""></div>
+      <div class="cap">Pâtisseries pliées à la main, servies avec le thé.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="foot"><div class="name">Bistro Kawtar</div><div class="sub">Laval · Saveurs marocaines</div></div>
+  </div>
+</section>
+
+<!-- ============================================================= PAGE 7 · BOISSONS CHAUDES -->
+<section class="sheet">
+  <div class="grain"></div><div class="vignette"></div>
+  <div class="crops"><i class="v tl-v"></i><i class="h tl-h"></i><i class="v tr-v"></i><i class="h tr-h"></i><i class="v bl-v"></i><i class="h bl-h"></i><i class="v br-v"></i><i class="h br-h"></i></div>
+  <div class="frame"></div>
+  <div class="content">
+    <div class="eyebrow">À siroter, bien chaud</div>
+    <div class="sec-title">Boissons Chaudes</div>
+    <div class="divider"><span class="ln"></span><span class="star"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg></span><span class="ln r"></span></div>
+
+    <div class="item" style="border-bottom:0.5pt dotted rgba(160,60,40,.22);">
+      <div class="item-top"><span class="item-name">Thé Marocain <span class="q">— traditionnel</span></span></div>
+      <div class="sizes">
+        <span><b>Petit</b><u>5,99 $</u></span>
+        <span><b>Moyen</b><u>9,99 $</u></span>
+        <span><b>Grand</b><u>12,99 $</u></span>
+      </div>
+    </div>
+    <div class="list">
+      <div class="item"><div class="item-top"><span class="item-name">Thé Chamali</span><span class="lead"></span><span class="price">4,99<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Cappuccino</span><span class="lead"></span><span class="price">4,25<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Latte</span><span class="lead"></span><span class="price">4,25<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Macchiato</span><span class="lead"></span><span class="price">3,99<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Allongé</span><span class="lead"></span><span class="price">2,99<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Espresso</span><span class="lead"></span><span class="price">2,99<span class="cur"> $</span></span></div></div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="hero-arch" style="max-width:3.3in; margin:0 auto;">
+      <div class="arch-wrap"><img class="arch" src="../assets/menu-photos/tea.png" alt=""></div>
+      <div class="cap">L'atay à la menthe, versé de haut.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="foot"><div class="name">Bistro Kawtar</div><div class="sub">Laval · Saveurs marocaines</div></div>
+  </div>
+</section>
+
+<!-- ============================================================= PAGE 8 · BOISSONS FROIDES -->
+<section class="sheet">
+  <div class="grain"></div><div class="vignette"></div>
+  <div class="crops"><i class="v tl-v"></i><i class="h tl-h"></i><i class="v tr-v"></i><i class="h tr-h"></i><i class="v bl-v"></i><i class="h bl-h"></i><i class="v br-v"></i><i class="h br-h"></i></div>
+  <div class="frame"></div>
+  <div class="content">
+    <div class="eyebrow">Bien fraîches</div>
+    <div class="sec-title">Boissons Froides</div>
+    <div class="divider"><span class="ln"></span><span class="star"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg></span><span class="ln r"></span></div>
+    <div class="list">
+      <div class="item"><div class="item-top"><span class="item-name">Smoothie <span class="q">— fruits frais</span></span><span class="lead"></span><span class="price">8,99<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Za3za3 <span class="q">— avocat, noix, dattes</span></span><span class="lead"></span><span class="price">9,99<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Jus d'Orange</span><span class="lead"></span><span class="price">2,99<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Jus de Pomme</span><span class="lead"></span><span class="price">2,99<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Thé Glacé</span><span class="lead"></span><span class="price">4,25<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Nestea</span><span class="lead"></span><span class="price">3,25<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Boisson Gazeuse</span><span class="lead"></span><span class="price">2,75<span class="cur"> $</span></span></div></div>
+      <div class="item"><div class="item-top"><span class="item-name">Eau</span><span class="lead"></span><span class="price">2,50<span class="cur"> $</span></span></div></div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="hero-arch" style="max-width:3.1in; margin:0 auto;">
+      <div class="arch-wrap"><img class="arch" src="../assets/menu-photos/drinks.png" alt=""></div>
+      <div class="cap">Jus pressés, smoothies &amp; thé glacé.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="divider"><span class="ln"></span><span class="star"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg></span><span class="ln r"></span></div>
+    <div class="contact" style="margin-top:12px;">
+      <div class="contact-col">
+        <div class="ct-h">Nous trouver</div>
+        <div class="ct-b">101 Boul. de la Concorde O.<br>Laval, QC H7N 1H8</div>
+      </div>
+      <div class="contact-col">
+        <div class="ct-h">Horaires</div>
+        <div class="ct-b">Mar 9h–19h · Mer 9h–20h · Jeu 9h–21h<br>Ven &amp; Sam 9h–22h · Dim 9h–19h<br>Lundi fermé</div>
+      </div>
+      <div class="contact-col">
+        <div class="ct-h">Contact</div>
+        <div class="ct-b">514 891-0831 · 450 809-1016<br>@cafebistrokawtar<br>kawtar.ca</div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:20px;">
+      <div style="font-family:'Marck Script',cursive; font-size:23px; color:var(--terra);">Bslama — à bientôt chez Kawtar</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="foot"><div class="name">Bistro Kawtar</div><div class="sub">Café · Bistro marocain — Laval</div></div>
+  </div>
+</section>
+
+</body>
+</html>

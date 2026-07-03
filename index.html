@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kawtar — Café · Bistro Marocain · Laval</title>
+<meta name="description" content="Café Bistro Kawtar à Laval — tajines mijotés, grillades, mezze, pâtisseries et thé à la menthe versé de haut. 101 Boul. de la Concorde O., Laval, QC.">
+<meta name="theme-color" content="#15100d">
+
+<meta property="og:title" content="Kawtar — Café · Bistro Marocain · Laval">
+<meta property="og:description" content="Une petite table marocaine à Laval : tajines, mezze, pâtisseries et thé à la menthe.">
+<meta property="og:type" content="restaurant">
+<meta property="og:image" content="./assets/photos/hero-bg.jpg">
+
+<link rel="icon" href="./assets/brand/kawtar-icon.png">
+<link rel="apple-touch-icon" href="./assets/brand/kawtar-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="./css/styles.css?v=5">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Café Bistro Kawtar",
+  "servesCuisine": ["Moroccan", "Mediterranean", "Grill", "Café", "Breakfast"],
+  "priceRange": "$$",
+  "url": "https://kawtar.ca",
+  "telephone": "+1-514-891-0831",
+  "image": "./assets/photos/hero-bg.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "101 Boulevard de la Concorde Ouest",
+    "addressLocality": "Laval",
+    "addressRegion": "QC",
+    "postalCode": "H7N 1H8",
+    "addressCountry": "CA"
+  },
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Tuesday",   "opens": "09:00", "closes": "19:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:00", "closes": "20:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Thursday",  "opens": "09:00", "closes": "21:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Friday",    "opens": "09:00", "closes": "22:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday",  "opens": "09:00", "closes": "22:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday",    "opens": "09:00", "closes": "19:00" }
+  ]
+}
+</script>
+
+<script>
+  /* Set layout mode + language before first paint to avoid flashes. */
+  (function () {
+    var d = document.documentElement;
+    try {
+      var fine = matchMedia('(min-width:1024px) and (pointer:fine)').matches;
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      d.classList.add(fine && !reduce ? 'mode-horizontal' : 'mode-vertical');
+    } catch (e) { d.classList.add('mode-vertical'); }
+    try {
+      var lang = localStorage.getItem('kawtarLang');
+      if (lang === 'en') d.setAttribute('lang', 'en');
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#p-menu" data-en="Skip to the menu">Aller au menu</a>
+
+<div class="progress" data-progress aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" data-nav>
+  <a class="nav__brand" data-link="p-hero" href="#p-hero" aria-label="Kawtar — accueil">
+    <img src="./assets/brand/kawtar-icon.png" alt="" width="46" height="46" class="nav__mark">
+    <span class="nav__name">KAWTAR</span>
+  </a>
+
+  <div class="nav__links" id="navLinks">
+    <a class="nav__link" data-link="p-menu" href="#p-menu" data-en="Menu">Menu</a>
+    <a class="nav__link" data-link="p-story" href="#p-story" data-en="Story">Histoire</a>
+    <a class="nav__link" data-link="p-gallery" href="#p-gallery" data-en="Gallery">Galerie</a>
+    <a class="nav__link" data-link="p-reels" href="#p-reels" data-en="Video">Vidéo</a>
+    <a class="nav__link" data-link="p-visit" href="#p-visit" data-en="Visit">Nous trouver</a>
+    <button class="lang" data-lang-toggle type="button" aria-label="Français / English">
+      <span class="lang__opt" data-lang-opt="fr">FR</span><span class="lang__sep">/</span><span class="lang__opt" data-lang-opt="en">EN</span>
+    </button>
+    <button class="btn btn--ghost nav__reserve" data-reserve type="button" data-en="Reserve">Réserver</button>
+  </div>
+
+  <button class="nav__toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<aside class="dots" data-dots aria-hidden="true"></aside>
+
+<div class="cue" data-cue aria-hidden="true">
+  <span class="cue__label" data-en="Scroll">Faites défiler</span>
+  <span class="cue__line"></span>
+</div>
+
+<div class="spacer" data-spacer aria-hidden="true"></div>
+
+<!-- ===================== STAGE ===================== -->
+<main class="stage">
+  <div class="track" data-track>
+
+    <!-- ============ PANEL 1 · HERO ============ -->
+    <section id="p-hero" class="panel panel--hero" data-panel data-label="Accueil">
+      <div class="panel__bg" data-anim data-depth="-0.5">
+        <video class="panel__bg-img" data-scrub data-scrub-mode="exit" muted playsinline preload="auto"
+               poster="./assets/tajine/tajine-closed.jpg" aria-label="Tajine qui s'ouvre au défilement">
+          <source src="./assets/video/tajine-open.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="panel__scrim panel__scrim--hero"></div>
+
+      <div class="float float--1" data-anim data-depth="1.6" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg>
+      </div>
+      <div class="float float--2" data-anim data-depth="2.4" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg>
+      </div>
+
+      <div class="hero__inner">
+        <div class="kicker" data-anim data-depth="0.9" data-rv="scale">
+          <span class="kicker__rule"></span>
+          <span class="kicker__text" data-en="A taste of Morocco">Un goût du Maroc</span>
+          <span class="kicker__rule kicker__rule--rev"></span>
+        </div>
+        <h1 class="hero__title" data-anim data-depth="0.55">Kawtar</h1>
+        <div class="hero__sub" data-anim data-depth="0.75">Café &nbsp;·&nbsp; Bistro</div>
+        <p class="hero__lede" data-anim data-depth="1.05" data-en="Slow-cooked tagines, mint tea poured from a height, and the warmth of a Marrakech medina — in a small neighbourhood bistro in Laval.">Tajines mijotés lentement, thé à la menthe versé de haut et la chaleur d'une médina marrakchie — dans un petit bistro de quartier, à Laval.</p>
+        <div class="hero__cta" data-anim data-depth="1.3">
+          <a class="btn btn--gold" data-link="p-menu" href="#p-menu" data-en="Explore the menu">Découvrir le menu</a>
+          <button class="btn btn--ghost" data-reserve type="button" data-en="Book a table">Réserver une table</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 2 · STORY ============ -->
+    <section id="p-story" class="panel panel--story" data-panel data-label="Histoire">
+      <div class="wrap story__grid">
+        <div class="story__copy">
+          <div class="eyebrow" data-anim data-depth="1.5" data-rv="left" data-en="Our story">Notre histoire</div>
+          <h2 class="display" data-anim data-depth="1.1" data-rv="left" data-en="Where the medina<br>meets the table.">Là où la médina<br>rencontre la table.</h2>
+          <p class="lede" data-anim data-depth="0.8" data-rv="left" data-en="Kawtar began with a copper teapot and a grandmother's recipe book. Today we braise the same seven vegetables over gentle coals, fold pastries by hand at dawn, and pour mint tea the old way — high, frothy, unhurried.">Kawtar a commencé avec une théière en cuivre et le carnet de recettes d'une grand-mère. Aujourd'hui, nous braisons les mêmes sept légumes sur braises douces, plions les pâtisseries à la main dès l'aube et versons le thé à la menthe à l'ancienne — haut, mousseux, sans hâte.</p>
+          <div class="stats" data-anim data-depth="0.55">
+            <div class="stat"><div class="stat__num" data-count="12">12</div><div class="stat__label" data-en="Spices daily">Épices par jour</div></div>
+            <div class="stat"><div class="stat__num" data-count="7" data-suffix="h">7h</div><div class="stat__label" data-en="Slow-cooked tagine">Tajine mijoté</div></div>
+            <div class="stat"><div class="stat__num">'09</div><div class="stat__label" data-en="Pouring since">On verse depuis</div></div>
+          </div>
+        </div>
+        <figure class="story__media" data-anim data-depth="2.1" data-rv="right">
+          <span class="media-frame" aria-hidden="true"></span>
+          <video class="story__img" data-scrub muted playsinline preload="auto"
+                 poster="./assets/photos/about.jpg"
+                 aria-label="Thé à la menthe versé de haut dans un verre">
+            <source src="./assets/video/tea-pour.mp4" type="video/mp4">
+          </video>
+          <span class="scrub-hint" aria-hidden="true" data-en="Scroll to pour">Défilez pour verser</span>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ PANEL · INTERACTIVE TAJINE ============ -->
+    <section id="p-tajine" class="panel panel--tajine" data-panel data-label="Le tajine">
+      <div class="tajine-stage" data-tajine-stage>
+        <div class="tajine-inner">
+          <div class="eyebrow eyebrow--center" data-en="Interactive">Interactif</div>
+          <h2 class="tajine-name" data-tajine-name>Tajine Poulet</h2>
+          <p class="tajine-sub" data-tajine-sub>Citron confit, olives &amp; safran</p>
+
+          <div class="tajine-product" data-tajine-product>
+            <div class="tajine-glow" aria-hidden="true"></div>
+            <img class="tajine-dish" data-dish="0" src="./assets/tajine/dish-chicken.jpg" alt="Tajine de poulet">
+            <img class="tajine-dish" data-dish="1" src="./assets/tajine/dish-beef.jpg" alt="Tajine de bœuf">
+            <img class="tajine-dish" data-dish="2" src="./assets/tajine/dish-veg.jpg" alt="Tajine de légumes">
+            <img class="tajine-dish" data-dish="3" src="./assets/tajine/dish-seafood.jpg" alt="Tajine de fruits de mer">
+            <img class="tajine-lid" data-tajine-lid src="./assets/tajine/tajine-closed.jpg" alt="" aria-hidden="true">
+            <video class="tajine-vid" data-tajine-vid muted playsinline preload="auto" aria-hidden="true">
+              <source src="./assets/video/tajine-open.mp4" type="video/mp4">
+            </video>
+          </div>
+
+          <div class="tajine-steps" data-tajine-steps aria-hidden="true">
+            <span data-step="0" class="is-on"></span><span data-step="1"></span><span data-step="2"></span><span data-step="3"></span>
+          </div>
+          <div class="tajine-cue" aria-hidden="true"><span data-en="Keep scrolling">Continuez à défiler</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL · MENU · PETIT DÉJEUNER ============ -->
+    <section id="p-menu" class="panel panel--menu panel--menu-alt" data-panel data-label="Petit Déjeuner">
+      <div class="wrap">
+        <header class="menu-head" data-anim data-depth="1.4" data-rv="scale">
+          <div class="eyebrow eyebrow--center" data-en="To start the day">Pour bien commencer</div>
+          <h2 class="display display--center" data-en="Breakfast">Petit Déjeuner</h2>
+        </header>
+        <div class="menu-cols">
+          <div class="menu-col" data-anim data-depth="1.0">
+            <h3 class="menu-sub"><span class="diamond diamond--gold"></span><span data-en="The Breakfasts">Les Déjeuners</span></h3>
+            <span class="menu-rule"></span>
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name">Déjeuner Fassi</span><span class="mi__desc" data-en="Eggs, cured beef, fresh cheese, black olives, house bread &amp; Moroccan tea">Œufs, viande séchée, fromage frais, olives noires, pain maison &amp; thé marocain</span></div><span class="mi__lead"></span><span class="mi__price">18.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Déjeuner Beldi</span><span class="mi__desc" data-en="Msemen, harcha, fresh cheese, honey, olives, Moroccan tea &amp; orange juice">Msemen, harcha, fromage frais, miel, olives, thé marocain &amp; jus d'orange</span></div><span class="mi__lead"></span><span class="mi__price">16.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Déjeuner Gourmand</span><span class="mi__desc" data-en="Eggs, sautéed mushrooms, mozzarella, grilled potatoes, fresh cheese, black olives &amp; tea or coffee">Œufs, champignons sautés, mozzarella, pommes de terre grillées, fromage frais, olives noires &amp; thé ou café</span></div><span class="mi__lead"></span><span class="mi__price">20.99<i>$</i></span></li>
+            </ul>
+          </div>
+          <div class="menu-col" data-anim data-depth="1.6">
+            <h3 class="menu-sub"><span class="diamond diamond--red"></span>Mkila <span class="menu-sub__note" data-en="eggs, pan-style">œufs, à la poêle</span></h3>
+            <span class="menu-rule"></span>
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name">Mkila</span><span class="mi__desc" data-en="Eggs, fresh tomatoes &amp; Moroccan spices">Œufs, tomates fraîches &amp; épices marocaines</span></div><span class="mi__lead"></span><span class="mi__price">15.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Mkila with Shrimp">Mkila aux Crevettes</span><span class="mi__desc" data-en="Eggs, shrimp, tomatoes, olives, fresh cheese &amp; Moroccan tea">Œufs, crevettes, tomates, olives, fromage frais &amp; thé marocain</span></div><span class="mi__lead"></span><span class="mi__price">19.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Mkila Kefta</span><span class="mi__desc" data-en="Eggs, kefta, tomatoes &amp; house bread">Œufs, kefta, tomates &amp; pain maison</span></div><span class="mi__lead"></span><span class="mi__price">16.99<i>$</i></span></li>
+            </ul>
+            <div class="extras">
+              <span class="extras__label" data-en="Add-ons">Suppléments</span>
+              <span class="extras__item">Hrira <i>6.49$</i></span>
+              <span class="extras__item">Hsouwa <i>5.99$</i></span>
+              <span class="extras__item">Bissara <i>6.99$</i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL · MENU · ENTRÉES ============ -->
+    <section class="panel panel--menu" data-panel data-label="Entrées">
+      <div class="wrap">
+        <header class="menu-head" data-anim data-depth="1.4" data-rv="scale">
+          <div class="eyebrow eyebrow--center" data-en="To start">Pour commencer</div>
+          <h2 class="display display--center" data-en="Starters">Entrées</h2>
+        </header>
+        <div class="menu-cols">
+          <div class="menu-col" data-anim data-depth="1.0">
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name">Zaalouk</span><span class="mi__desc" data-en="Eggplant, tomato, garlic, cumin &amp; coriander">Aubergines, tomates, ail, cumin &amp; coriandre</span></div><span class="mi__lead"></span><span class="mi__price">7.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Taktouka</span><span class="mi__desc" data-en="Grilled peppers, tomato, garlic, cumin &amp; paprika">Poivrons grillés, tomates, ail, cumin &amp; paprika</span></div><span class="mi__lead"></span><span class="mi__price">8.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Moroccan Salad">Salade Marocaine</span><span class="mi__desc" data-en="Tomato, onion, green pepper, parsley, house vinaigrette">Tomates, oignons, poivrons verts, persil, vinaigrette maison</span></div><span class="mi__lead"></span><span class="mi__price">7.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Hrira</span><span class="mi__desc" data-en="Tomato, lentils, chickpeas, meat &amp; Moroccan spices">Tomates, lentilles, pois chiches, viande &amp; épices marocaines</span></div><span class="mi__lead"></span><span class="mi__price">6.49<i>$</i></span></li>
+            </ul>
+          </div>
+          <div class="menu-col" data-anim data-depth="1.6">
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name">Bissara</span><span class="mi__desc" data-en="Fava bean purée, garlic, cumin &amp; olive oil">Purée de fèves, ail, cumin &amp; huile d'olive</span></div><span class="mi__lead"></span><span class="mi__price">7.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Chicken Pastilla">Pastilla au Poulet</span><span class="mi__desc" data-en="Chicken, almonds, caramelised onion, cinnamon, brick pastry">Poulet, amandes, oignons caramélisés, cannelle, feuille de brick</span></div><span class="mi__lead"></span><span class="mi__price">8.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Seafood Pastilla">Pastilla au Poisson</span><span class="mi__desc" data-en="Shrimp, calamari, fish, vermicelli &amp; Moroccan spices">Crevettes, calamars, poisson, vermicelles &amp; épices marocaines</span></div><span class="mi__lead"></span><span class="mi__price">9.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Moroccan Cigars">Cigare Marocain</span><span class="mi__desc" data-en="Your choice: ground beef or chicken">Au choix : viande hachée ou poulet</span></div><span class="mi__lead"></span><span class="mi__price">5.99<i>$</i></span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 4 · MENU · PLATS ============ -->
+    <section class="panel panel--menu panel--menu-alt" data-panel data-label="Plats">
+      <div class="wrap">
+        <header class="menu-head" data-anim data-depth="1.4" data-rv="scale">
+          <div class="eyebrow eyebrow--center" data-en="The table">La table</div>
+          <h2 class="display display--center" data-en="Tagines &amp; Couscous">Tajines &amp; Couscous</h2>
+        </header>
+        <div class="menu-cols">
+          <div class="menu-col" data-anim data-depth="1.0">
+            <h3 class="menu-sub"><span class="diamond diamond--red"></span><span data-en="Tagines">Tajines</span></h3>
+            <span class="menu-rule"></span>
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Chicken Tagine, Olives &amp; Fries">Tajine Poulet, Olives &amp; Frites</span><span class="mi__desc" data-en="Chicken, olives, preserved lemon, onion, spices, fries">Poulet, olives, citron confit, oignons, épices, frites</span></div><span class="mi__lead"></span><span class="mi__price">21.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Veal Tagine, Artichokes &amp; Peas">Tajine de Veau, Artichauts &amp; Petits Pois</span><span class="mi__desc" data-en="Veal, artichokes, peas, onion &amp; Moroccan spices">Veau, artichauts, petits pois, oignons &amp; épices marocaines</span></div><span class="mi__lead"></span><span class="mi__price">24.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Veal Tagine, Onions &amp; Raisins">Tajine de Veau, Oignons &amp; Raisins Secs</span><span class="mi__desc" data-en="Veal, candied onion, raisins &amp; spices">Veau, oignons confits, raisins secs &amp; épices</span></div><span class="mi__lead"></span><span class="mi__price">21.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Tajine Bouzroug</span><span class="mi__desc" data-en="Mussels, tomato, garlic, fresh herbs &amp; spices">Moules, tomates, ail, herbes fraîches &amp; épices</span></div><span class="mi__lead"></span><span class="mi__price">18.99<i>$</i></span></li>
+            </ul>
+          </div>
+          <div class="menu-col" data-anim data-depth="1.6">
+            <h3 class="menu-sub"><span class="diamond diamond--green"></span>Couscous <span class="menu-sub__note" data-en="Fri · Sat · Sun">Ven · Sam · Dim</span></h3>
+            <span class="menu-rule"></span>
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Veal Couscous">Couscous au Veau</span><span class="mi__desc" data-en="Veal, seasonal vegetables, chickpeas &amp; semolina">Veau, légumes de saison, pois chiches &amp; semoule</span></div><span class="mi__lead"></span><span class="mi__price">24.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Chicken Couscous">Couscous au Poulet</span><span class="mi__desc" data-en="Chicken, seasonal vegetables, chickpeas, tfaya &amp; semolina">Poulet, légumes de saison, pois chiches, tfaya &amp; semoule</span></div><span class="mi__lead"></span><span class="mi__price">22.99<i>$</i></span></li>
+            </ul>
+            <div class="extras">
+              <span class="extras__label" data-en="Extras">Extras</span>
+              <span class="extras__item">Tfaya <i>3.99$</i></span>
+              <span class="extras__item">Lben <i>2.99$</i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 5 · MENU · SANDWICHS & DESSERTS ============ -->
+    <section class="panel panel--menu" data-panel data-label="Sandwichs">
+      <div class="wrap">
+        <header class="menu-head" data-anim data-depth="1.4" data-rv="scale">
+          <div class="eyebrow eyebrow--center" data-en="On the go &amp; sweet">Sur le pouce &amp; sucré</div>
+          <h2 class="display display--center" data-en="Sandwiches &amp; Desserts">Sandwichs &amp; Desserts</h2>
+        </header>
+        <div class="menu-cols">
+          <div class="menu-col" data-anim data-depth="1.0">
+            <h3 class="menu-sub"><span class="diamond diamond--gold"></span><span data-en="Sandwiches">Sandwichs</span> <span class="menu-sub__note" data-en="+ combo: fries &amp; drink">+ combo : frites &amp; boisson</span></h3>
+            <span class="menu-rule"></span>
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Chicken">Poulet</span><span class="mi__desc" data-en="Chicken breast, tomato, onion, lettuce, cheese">Poitrines de poulet, tomates, oignons, laitue, fromage</span></div><span class="mi__lead"></span><span class="mi__price mi__price--dual">9.99<i>$</i><em>combo 13.99$</em></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Ground Beef">Viande Hachée</span><span class="mi__desc" data-en="Ground beef, tomato, onion, lettuce, olives, cheese">Viande hachée, tomates, oignons, laitue, olives, fromage</span></div><span class="mi__lead"></span><span class="mi__price mi__price--dual">9.99<i>$</i><em>combo 13.99$</em></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Tuna">Thon</span><span class="mi__desc" data-en="Fresh tuna, tomato, carrot, lettuce, onion, olives, harissa">Thon frais, tomates, carottes, laitue, oignon, olives, harissa</span></div><span class="mi__lead"></span><span class="mi__price mi__price--dual">8.99<i>$</i><em>combo 12.99$</em></span></li>
+            </ul>
+          </div>
+          <div class="menu-col" data-anim data-depth="1.6">
+            <h3 class="menu-sub"><span class="diamond diamond--red"></span>Desserts</h3>
+            <span class="menu-rule"></span>
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name">Msemen</span><span class="mi__desc" data-en="Flaky Moroccan pan-fried pancake">Crêpe feuilletée marocaine, dorée à la poêle</span></div><span class="mi__lead"></span><span class="mi__price">2.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Harcha</span><span class="mi__desc" data-en="Semolina griddle cake, crisp &amp; tender">Galette de semoule, croustillante &amp; tendre</span></div><span class="mi__lead"></span><span class="mi__price">2.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Moroccan Pastries">Gâteaux Marocains</span><span class="mi__desc" data-en="Assorted almond &amp; honey pastries">Assortiment de pâtisseries aux amandes &amp; miel</span></div><span class="mi__lead"></span><span class="mi__price">5.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Cheesecake</span><span class="mi__desc" data-en="Creamy, on a shortbread base">Onctueux, sur base sablée</span></div><span class="mi__lead"></span><span class="mi__price">8.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Tiramisu</span><span class="mi__desc" data-en="Mascarpone, coffee &amp; cocoa">Mascarpone, café &amp; cacao</span></div><span class="mi__lead"></span><span class="mi__price">7.99<i>$</i></span></li>
+            </ul>
+            <div class="extras">
+              <span class="extras__label" data-en="Extras">Extras</span>
+              <span class="extras__item" data-en="Honey <i>1.00$</i>">Miel <i>1.00$</i></span>
+              <span class="extras__item" data-en="Cheese <i>1.00$</i>">Fromage <i>1.00$</i></span>
+              <span class="extras__item">Nutella <i>1.50$</i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 6 · MENU · BOISSONS ============ -->
+    <section class="panel panel--menu panel--menu-alt" data-panel data-label="Boissons">
+      <div class="wrap">
+        <header class="menu-head" data-anim data-depth="1.4" data-rv="scale">
+          <div class="eyebrow eyebrow--center" data-en="To sip">À siroter</div>
+          <h2 class="display display--center" data-en="Drinks">Boissons</h2>
+        </header>
+        <div class="menu-cols">
+          <div class="menu-col" data-anim data-depth="1.0">
+            <h3 class="menu-sub"><span class="diamond diamond--red"></span><span data-en="Hot Drinks">Boissons Chaudes</span></h3>
+            <span class="menu-rule"></span>
+            <ul class="menu-list">
+              <li class="mi mi--sizes"><div class="mi__text"><span class="mi__name" data-en="Moroccan Tea <span class='mi__tag'>traditional</span>">Thé Marocain <span class="mi__tag">traditionnel</span></span><div class="mi__sizes"><span data-en="Small <i>5.99$</i>">Petit <i>5.99$</i></span><span data-en="Medium <i>9.99$</i>">Moyen <i>9.99$</i></span><span data-en="Large <i>12.99$</i>">Grand <i>12.99$</i></span></div></div></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Thé Chamali</span></div><span class="mi__lead"></span><span class="mi__price">4.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Cappuccino</span></div><span class="mi__lead"></span><span class="mi__price">4.25<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Latte</span></div><span class="mi__lead"></span><span class="mi__price">4.25<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Macchiato</span></div><span class="mi__lead"></span><span class="mi__price">3.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Allongé</span></div><span class="mi__lead"></span><span class="mi__price">2.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Espresso</span></div><span class="mi__lead"></span><span class="mi__price">2.99<i>$</i></span></li>
+            </ul>
+          </div>
+          <div class="menu-col" data-anim data-depth="1.6">
+            <h3 class="menu-sub"><span class="diamond diamond--green"></span><span data-en="Cold Drinks">Boissons Froides</span></h3>
+            <span class="menu-rule"></span>
+            <ul class="menu-list">
+              <li class="mi"><div class="mi__text"><span class="mi__name">Smoothie</span><span class="mi__desc" data-en="Fresh fruit">Fruits frais</span></div><span class="mi__lead"></span><span class="mi__price">8.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Za3za3</span><span class="mi__desc" data-en="Avocado, walnuts &amp; dates">Avocat, noix &amp; dattes</span></div><span class="mi__lead"></span><span class="mi__price">9.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Orange Juice">Jus d'Orange</span></div><span class="mi__lead"></span><span class="mi__price">2.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Apple Juice">Jus de Pomme</span></div><span class="mi__lead"></span><span class="mi__price">2.99<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Iced Tea">Thé Glacé</span></div><span class="mi__lead"></span><span class="mi__price">4.25<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name">Nestea</span></div><span class="mi__lead"></span><span class="mi__price">3.25<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Soft Drink">Boisson Gazeuse</span></div><span class="mi__lead"></span><span class="mi__price">2.75<i>$</i></span></li>
+              <li class="mi"><div class="mi__text"><span class="mi__name" data-en="Water">Eau</span></div><span class="mi__lead"></span><span class="mi__price">2.50<i>$</i></span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 7 · GALLERY ============ -->
+    <section id="p-gallery" class="panel panel--gallery" data-panel data-label="Galerie">
+      <div class="wrap">
+        <header class="gallery__head" data-anim data-depth="1.3" data-rv="left">
+          <div>
+            <div class="eyebrow" data-en="Inside Kawtar">Chez Kawtar</div>
+            <h2 class="display" data-en="The gallery">La galerie</h2>
+          </div>
+        </header>
+        <div class="gallery__grid">
+          <figure class="gcard" data-anim data-depth="0.7" data-rv="up">
+            <div class="gcard__media"><img src="./assets/photos/dish-prunes.jpg" alt="Tajine de volaille aux pruneaux et sésame"></div>
+            <figcaption><span class="gcard__title" data-en="Sweet &amp; savoury">Sucré-salé</span><span class="gcard__sub" data-en="Tagine, prunes &amp; sesame">Tajine, pruneaux &amp; sésame</span></figcaption>
+          </figure>
+          <figure class="gcard gcard--tall" data-anim data-depth="1.4" data-rv="up">
+            <div class="gcard__media"><img src="./assets/photos/gallery-2.jpg" alt="Pâtisseries marocaines et thé à la menthe"></div>
+            <figcaption><span class="gcard__title" data-en="Today's sweets">Douceurs du jour</span><span class="gcard__sub" data-en="Pastries, tea &amp; mornings">Pâtisseries, thé &amp; matins</span></figcaption>
+          </figure>
+          <figure class="gcard" data-anim data-depth="2.0" data-rv="up">
+            <div class="gcard__media"><img src="./assets/photos/gallery-3.jpg" alt="Thé à la menthe versé de haut"></div>
+            <figcaption><span class="gcard__title" data-en="Poured from a height">Versé de haut</span><span class="gcard__sub" data-en="Atay, the old way">L'atay, à l'ancienne</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL · REELS ============ -->
+    <section id="p-reels" class="panel panel--reels" data-panel data-label="En vidéo">
+      <div class="panel__bg" data-anim data-depth="-0.5">
+        <img src="./assets/photos/menu-spread.jpg" alt="" class="panel__bg-img" data-parallax="0.1">
+      </div>
+      <div class="panel__scrim panel__scrim--reels"></div>
+      <div class="wrap reels__wrap">
+        <header class="menu-head" data-anim data-depth="1.3" data-rv="scale">
+          <div class="eyebrow eyebrow--center" data-en="Straight from the kitchen">Direct de la cuisine</div>
+          <h2 class="display display--center" data-en="Kawtar, on video">Kawtar en vidéo</h2>
+        </header>
+        <div class="reels">
+          <figure class="reel" data-reel-card data-anim data-depth="0.7" data-rv="up">
+            <video class="reel__vid" data-reel src="./assets/video/reel-1.mp4" muted loop playsinline preload="metadata"></video>
+            <button class="reel__sound" type="button" aria-label="Son">
+              <svg class="icon-off" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16.5 8.5l5 7M21.5 8.5l-5 7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+              <svg class="icon-on" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8 8 0 010 12" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+            </button>
+            <span class="reel__hint" data-en="Tap for sound">Touchez pour le son</span>
+          </figure>
+          <figure class="reel" data-reel-card data-anim data-depth="1.3" data-rv="up">
+            <video class="reel__vid" data-reel src="./assets/video/reel-2.mp4" muted loop playsinline preload="metadata"></video>
+            <button class="reel__sound" type="button" aria-label="Son">
+              <svg class="icon-off" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16.5 8.5l5 7M21.5 8.5l-5 7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+              <svg class="icon-on" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8 8 0 010 12" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+            </button>
+            <span class="reel__hint" data-en="Tap for sound">Touchez pour le son</span>
+          </figure>
+          <figure class="reel" data-reel-card data-anim data-depth="1.9" data-rv="up">
+            <video class="reel__vid" data-reel src="./assets/video/reel-3.mp4" muted loop playsinline preload="metadata"></video>
+            <button class="reel__sound" type="button" aria-label="Son">
+              <svg class="icon-off" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16.5 8.5l5 7M21.5 8.5l-5 7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+              <svg class="icon-on" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8 8 0 010 12" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+            </button>
+            <span class="reel__hint" data-en="Tap for sound">Touchez pour le son</span>
+          </figure>
+        </div>
+        <div class="reels__follow" data-anim data-depth="0.9" data-rv="up">
+          <span data-en="Follow us">Suivez-nous</span>
+          <a class="social" href="https://www.instagram.com/cafebistrokawtar/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.3"/></svg>
+            Instagram
+          </a>
+          <a class="social" href="https://www.tiktok.com/@cafe_bistro_kawtar" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 3c.3 2.1 1.6 3.7 3.9 4v2.5c-1.5 0-2.9-.5-4-1.2v6.5a5.8 5.8 0 11-5.8-5.8c.31 0 .62.03.92.08v2.7a3.1 3.1 0 102.18 2.96V3h2.8z"/></svg>
+            TikTok
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 8 · QUOTE ============ -->
+    <section class="panel panel--quote" data-panel data-label="Citation">
+      <div class="panel__bg" data-anim data-depth="-0.5">
+        <img src="./assets/photos/quote-bg.jpg" alt="" class="panel__bg-img" data-parallax="0.1">
+      </div>
+      <div class="panel__scrim panel__scrim--quote"></div>
+      <blockquote class="quote">
+        <p class="quote__text" data-anim data-depth="0.9" data-rv="scale" data-en="“In Morocco, a guest is a gift from God. At Kawtar, we set the table as if you were already family.”">« Au Maroc, l'invité est un cadeau de Dieu. Chez Kawtar, nous dressons la table comme si vous étiez déjà de la famille. »</p>
+        <cite class="quote__cite" data-anim data-depth="1.4" data-en="— Kawtar, our founder">— Kawtar, notre fondatrice</cite>
+      </blockquote>
+    </section>
+
+    <!-- ============ PANEL 9 · VISIT ============ -->
+    <section id="p-visit" class="panel panel--visit" data-panel data-label="Nous trouver">
+      <div class="wrap visit__grid">
+        <div class="visit__copy">
+          <div class="eyebrow" data-anim data-depth="1.5" data-rv="left" data-en="Visit us">Nous rendre visite</div>
+          <h2 class="display" data-anim data-depth="1.1" data-rv="left" data-en="Come say<br>hello.">Passez<br>nous voir.</h2>
+          <dl class="info" data-anim data-depth="0.8" data-rv="left">
+            <div class="info__row"><dt data-en="Address">Adresse</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Caf%C3%A9%20Bistro%20Kawtar%20101%20Boulevard%20de%20la%20Concorde%20Ouest%20Laval%20QC%20H7N%201H8" target="_blank" rel="noopener">101 Boul. de la Concorde O.<br>Laval, QC H7N 1H8</a></dd></div>
+            <div class="info__row"><dt data-en="Hours">Horaires</dt><dd>
+              <ul class="hours">
+                <li><span data-en="Mon">Lun</span><span class="muted" data-en="Closed">Fermé</span></li>
+                <li><span data-en="Tue">Mar</span><span data-en="9 AM – 7 PM">9 h – 19 h</span></li>
+                <li><span data-en="Wed">Mer</span><span data-en="9 AM – 8 PM">9 h – 20 h</span></li>
+                <li><span data-en="Thu">Jeu</span><span data-en="9 AM – 9 PM">9 h – 21 h</span></li>
+                <li><span data-en="Fri">Ven</span><span data-en="9 AM – 10 PM">9 h – 22 h</span></li>
+                <li><span data-en="Sat">Sam</span><span data-en="9 AM – 10 PM">9 h – 22 h</span></li>
+                <li><span data-en="Sun">Dim</span><span data-en="9 AM – 7 PM">9 h – 19 h</span></li>
+              </ul>
+            </dd></div>
+            <div class="info__row"><dt data-en="Contact">Contact</dt><dd><a href="tel:+15148910831">514 891-0831</a> &nbsp;·&nbsp; <a href="tel:+14508091016">450 809-1016</a><br><a href="https://www.instagram.com/cafebistrokawtar/" target="_blank" rel="noopener">Instagram</a> &nbsp;·&nbsp; <a href="https://www.tiktok.com/@cafe_bistro_kawtar" target="_blank" rel="noopener">TikTok</a> &nbsp;·&nbsp; <a href="https://kawtar.ca" target="_blank" rel="noopener">kawtar.ca</a></dd></div>
+          </dl>
+          <button class="btn btn--gold visit__cta" data-anim data-depth="0.55" data-reserve type="button" data-en="Book a table">Réserver une table</button>
+        </div>
+        <div class="visit__brand" data-anim data-depth="2.1" data-rv="right">
+          <img src="./assets/brand/kawtar-lockup.png" alt="Kawtar Café · Bistro" class="visit__lockup">
+          <p class="visit__sign" data-en="© 2026 Kawtar Café · Bistro<br>Bslama — come hungry, leave as family.">© 2026 Kawtar Café · Bistro<br>Bslama — venez affamés, repartez en famille.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ===================== RESERVATION MODAL ===================== -->
+<div class="modal" id="reserveModal" aria-hidden="true">
+  <div class="modal__overlay" data-modal-close></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="reserveTitle">
+    <button class="modal__close" data-modal-close type="button" aria-label="Fermer">&times;</button>
+    <div class="modal__mark" aria-hidden="true">
+      <svg viewBox="0 0 100 100"><path d="M50 4 60 30 88 30 65 48 74 76 50 60 26 76 35 48 12 30 40 30Z"/></svg>
+    </div>
+    <div class="eyebrow eyebrow--center" data-en="Reservation">Réservation</div>
+    <h2 class="modal__title display" id="reserveTitle" data-en="A table awaits you">Une table vous attend</h2>
+    <form class="rform" id="reserveForm" novalidate>
+      <div class="rform__row">
+        <label class="field"><span data-en="Name">Nom</span><input type="text" name="name" required autocomplete="name" placeholder="Votre nom" data-en-ph="Your name"></label>
+        <label class="field"><span data-en="Phone">Téléphone</span><input type="tel" name="phone" required autocomplete="tel" placeholder="+1 ..."></label>
+      </div>
+      <div class="rform__row">
+        <label class="field"><span data-en="Date">Date</span><input type="date" name="date" required></label>
+        <label class="field"><span data-en="Time">Heure</span><input type="time" name="time" required value="19:00"></label>
+        <label class="field field--small"><span data-en="Guests">Couverts</span>
+          <select name="guests">
+            <option>1</option><option>2</option><option selected>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8+</option>
+          </select>
+        </label>
+      </div>
+      <label class="field"><span data-en="A note? (optional)">Une note ? (facultatif)</span><input type="text" name="note" placeholder="Occasion, allergies, préférences..." data-en-ph="Occasion, allergies, preferences..."></label>
+      <button class="btn btn--gold rform__submit" type="submit" data-en="Confirm request">Confirmer la demande</button>
+      <p class="rform__fine" data-en="We'll call you back to confirm. For same-day, call us at <a href=&quot;tel:+15148910831&quot;>514 891-0831</a>.">Nous vous rappelons pour confirmer. Pour aujourd'hui, appelez-nous au <a href="tel:+15148910831">514 891-0831</a>.</p>
+    </form>
+    <div class="rform__done" id="reserveDone" hidden>
+      <div class="rform__done-mark" aria-hidden="true">✦</div>
+      <h3 class="display" data-done-head>Merci, <span data-done-name>l'ami</span>.</h3>
+      <p data-done-body>Votre demande pour <span data-done-detail>une table</span> est bien reçue. Nous vous rappelons sous peu pour confirmer. <em>Bslama.</em></p>
+      <button class="btn btn--ghost" data-modal-close type="button" data-en="Close">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script src="./js/main.js?v=5"></script>
+</body>
+</html>

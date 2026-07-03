@@ -1,0 +1,16 @@
+# macOS / editor
+.DS_Store
+._*
+Thumbs.db
+
+# logs & temp
+*.log
+/print/_render.pdf
+
+# print-menu working files & build/preview artifacts
+# (the final print PDF is kept at the repo root)
+/menu-source/
+/assets/menu-photos/
+/print/gallery/
+/print/*.png
+/print/kawtar-menu-print.pdf
