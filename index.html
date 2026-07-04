@@ -54,11 +54,7 @@
   /* Set layout mode + language before first paint to avoid flashes. */
   (function () {
     var d = document.documentElement;
-    try {
-      var fine = matchMedia('(min-width:1024px) and (pointer:fine)').matches;
-      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      d.classList.add(fine && !reduce ? 'mode-horizontal' : 'mode-vertical');
-    } catch (e) { d.classList.add('mode-vertical'); }
+    d.classList.add('mode-vertical');   // vertical-only site
     try {
       var lang = localStorage.getItem('kawtarLang');
       if (lang === 'en') d.setAttribute('lang', 'en');
@@ -84,6 +80,7 @@
     <a class="nav__link" data-link="p-story" href="#p-story" data-en="Story">Histoire</a>
     <a class="nav__link" data-link="p-gallery" href="#p-gallery" data-en="Gallery">Galerie</a>
     <a class="nav__link" data-link="p-reels" href="#p-reels" data-en="Video">Vidéo</a>
+    <a class="nav__link" data-link="p-catering" href="#p-catering" data-en="Catering">Traiteur</a>
     <a class="nav__link" data-link="p-visit" href="#p-visit" data-en="Visit">Nous trouver</a>
     <button class="lang" data-lang-toggle type="button" aria-label="Français / English">
       <span class="lang__opt" data-lang-opt="fr">FR</span><span class="lang__sep">/</span><span class="lang__opt" data-lang-opt="en">EN</span>
@@ -458,6 +455,26 @@
         <p class="quote__text" data-anim data-depth="0.9" data-rv="scale" data-en="“In Morocco, a guest is a gift from God. At Kawtar, we set the table as if you were already family.”">« Au Maroc, l'invité est un cadeau de Dieu. Chez Kawtar, nous dressons la table comme si vous étiez déjà de la famille. »</p>
         <cite class="quote__cite" data-anim data-depth="1.4" data-en="— Kawtar, our founder">— Kawtar, notre fondatrice</cite>
       </blockquote>
+    </section>
+
+    <!-- ============ PANEL · CATERING (TRAITEUR) ============ -->
+    <section id="p-catering" class="panel panel--catering" data-panel data-label="Traiteur">
+      <div class="panel__bg" data-anim data-depth="-0.5">
+        <img src="./assets/photos/menu-spread.jpg" alt="" class="panel__bg-img" data-parallax="0.1">
+      </div>
+      <div class="panel__scrim panel__scrim--catering"></div>
+      <div class="catering">
+        <div class="eyebrow eyebrow--center" data-anim data-depth="1.4" data-rv="scale" data-en="Catering">Service traiteur</div>
+        <h2 class="display display--center" data-anim data-depth="1.1" data-en="Kawtar at<br>your table.">Kawtar s'invite<br>chez vous.</h2>
+        <p class="lede catering__lede" data-anim data-depth="0.9" data-en="Weddings, corporate events, family gatherings — tagines, couscous, mezze and pastries, prepared with the same care for any occasion. Tell us what you have in mind.">Mariages, événements corporatifs, réunions de famille — tajines, couscous, mezze et pâtisseries, préparés avec le même soin pour toutes vos occasions. Dites-nous ce que vous imaginez.</p>
+        <div class="catering__cta" data-anim data-depth="0.7">
+          <a class="btn btn--gold catering__btn" href="tel:+15148910831" data-en="Call us">
+            <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+            Appelez-nous
+          </a>
+          <a class="catering__phone" href="tel:+15148910831">514 891-0831</a>
+        </div>
+      </div>
     </section>
 
     <!-- ============ PANEL 9 · VISIT ============ -->

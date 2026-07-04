@@ -446,27 +446,12 @@
      MODE SWITCHING
      ====================================================================== */
   function apply() {
-    var horizontal = mqDesktop.matches && !mqReduce.matches;
-    setMode(horizontal);
+    setMode(false);               // vertical-only site (horizontal side-scroll removed)
     currentPanel = -1;
     if (active) { active(); active = null; }
-    window.scrollTo(0, 0);
-    active = horizontal ? horizontalMode() : verticalMode();
+    active = verticalMode();
   }
   apply();
-
-  var reTimer;
-  function onModeMaybeChanged() {
-    clearTimeout(reTimer);
-    reTimer = setTimeout(function () {
-      var horizontal = mqDesktop.matches && !mqReduce.matches;
-      if (horizontal !== docEl.classList.contains('mode-horizontal')) apply();
-    }, 200);
-  }
-  (mqDesktop.addEventListener ? mqDesktop.addEventListener('change', onModeMaybeChanged)
-    : mqDesktop.addListener(onModeMaybeChanged));
-  (mqReduce.addEventListener ? mqReduce.addEventListener('change', onModeMaybeChanged)
-    : mqReduce.addListener(onModeMaybeChanged));
 
   /* ======================================================================
      LANGUAGE (FR / EN)
