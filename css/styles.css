@@ -366,7 +366,7 @@ video.story__img { z-index: 1; }
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
   border-radius: 18px; z-index: 1;
 }
-.tajine-dish { opacity: 0; will-change: opacity; filter: drop-shadow(0 30px 45px rgba(0, 0, 0, .55)); }
+.tajine-dish { opacity: 0; will-change: opacity, transform; filter: drop-shadow(0 30px 45px rgba(0, 0, 0, .55)); }
 .tajine-lid { z-index: 3; will-change: opacity, transform; filter: drop-shadow(0 30px 45px rgba(0, 0, 0, .55)); }
 .tajine-vid { z-index: 4; opacity: 0; }
 .tajine-has-vid .tajine-lid { display: none; }

@@ -20,21 +20,69 @@
   /* ---------- scroll-scrubbed videos (hero tajine + story tea-pour) ----------
      mode "exit"  — closed at rest, scrubs open as the panel scrolls away (hero)
      mode "cross" — scrubs across enter → centre → exit (story)                */
+  // Touch devices (iOS Safari especially) don't repaint video frames on
+  // currentTime seeks — only during real playback. So on coarse pointers we
+  // PLAY the clip on view instead of scrubbing it, which animates reliably.
+  var coarsePointer = window.matchMedia('(pointer: coarse)').matches
+    || window.matchMedia('(hover: none)').matches
+    || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
   var scrubVids = [].slice.call(document.querySelectorAll('[data-scrub]'));
   scrubVids.forEach(function (v) {
     v._pi = panels.indexOf(v.closest('[data-panel]'));
     v._mode = v.getAttribute('data-scrub-mode') || 'cross';
     v._ready = false; v._last = -1;
+    v._playScrub = coarsePointer;        // mobile: play instead of scrub
     var prime = function () {
       v._ready = true;
-      var p = v.play();                    // prime decode so seeks are responsive
+      if (v._playScrub) return;          // mobile: IntersectionObserver drives playback
+      var p = v.play();                  // prime decode so seeks are responsive
       if (p && p.then) p.then(function () { v.pause(); }).catch(function () {});
     };
     if (v.readyState >= 1) prime();
     else v.addEventListener('loadedmetadata', prime, { once: true });
   });
+
+  // Mobile playback driver: play each scrub clip from the start when it scrolls
+  // into view; pause when it leaves. Reduced-motion → freeze on the open frame.
+  if (coarsePointer && scrubVids.length && 'IntersectionObserver' in window) {
+    var freezeOpen = function (v) {
+      var set = function () { try { v.currentTime = (v.duration || 0.1) - 0.05; } catch (e) {} };
+      if (v.readyState >= 1) set(); else v.addEventListener('loadedmetadata', set, { once: true });
+    };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      scrubVids.forEach(freezeOpen);
+    } else {
+      var playFromView = function (v) {
+        if (!v._want) return;
+        try { if (v.paused && v.currentTime > 0.1) v.currentTime = 0; } catch (e) {}
+        var p = v.play(); if (p && p.catch) p.catch(function () {
+          v.addEventListener('canplay', function once() {
+            v.removeEventListener('canplay', once);
+            if (v._want) { var q = v.play(); if (q && q.catch) q.catch(function () {}); }
+          }, { once: true });
+        });
+      };
+      var scrubIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          var v = en.target;
+          if (en.isIntersecting) { v._want = true; playFromView(v); }
+          else { v._want = false; v.pause(); }
+        });
+      }, { threshold: 0.25 });
+      scrubVids.forEach(function (v) { scrubIO.observe(v); });
+      // iOS gates muted autoplay until the first gesture — unlock on it.
+      var scrubUnlocked = false;
+      var scrubUnlock = function () {
+        if (scrubUnlocked) return; scrubUnlocked = true;
+        scrubVids.forEach(function (v) { if (v._want) playFromView(v); });
+      };
+      ['touchstart', 'pointerdown', 'wheel', 'scroll', 'keydown'].forEach(function (ev) {
+        window.addEventListener(ev, scrubUnlock, { once: true, passive: true });
+      });
+    }
+  }
   function setScrub(v, progress) {
-    if (!v._ready) return;
+    if (!v._ready || v._playScrub) return;
     var dur = v.duration;
     if (!dur || !isFinite(dur)) return;
     progress = Math.max(0, Math.min(1, progress));
@@ -128,11 +176,13 @@
   var TAJINE_DATA = [
     { fr: ['Tajine Poulet', 'Citron confit, olives & safran'],       en: ['Chicken Tajine', 'Preserved lemon, olives & saffron'] },
     { fr: ['Tajine Bœuf', 'Oignons confits, pruneaux & sésame'],     en: ['Beef Tajine', 'Caramelised onion, prunes & sesame'] },
-    { fr: ['Tajine Légumes', 'Sept légumes, pois chiches & herbes'], en: ['Vegetable Tajine', 'Seven vegetables, chickpeas & herbs'] },
-    { fr: ['Tajine Fruits de Mer', 'Crevettes, moules & chermoula'], en: ['Seafood Tajine', 'Shrimp, mussels & chermoula'] }
+    { fr: ['Couscous Royal', 'Sept légumes, pois chiches & semoule'], en: ['Royal Couscous', 'Seven vegetables, chickpeas & semolina'] },
+    { fr: ['Tajine Bouzroug', 'Moules, tomate, ail & chermoula'], en: ['Tajine Bouzroug', 'Mussels, tomato, garlic & chermoula'] }
   ];
 
-  if (tajineVid) {
+  // Touch devices can't repaint currentTime seeks (see scrub note above) —
+  // leave the vid unprimed there so the lid-image fallback animates instead.
+  if (tajineVid && !coarsePointer) {
     var tjPrime = function () {
       tajineVidReady = true; tajineVidDur = tajineVid.duration || 0;
       if (tajineSection) tajineSection.classList.add('tajine-has-vid');
@@ -153,9 +203,7 @@
     tajineStepEls.forEach(function (s, k) { s.classList.toggle('is-on', k === i); });
   }
 
-  function updateTajine(p) {
-    if (!tajineSection) return;
-    p = Math.max(0, Math.min(1, p));
+  function applyTajine(p) {
     var open = Math.max(0, Math.min(1, p / 0.16));        // 0 = lid closed → 1 = open
     if (tajineVidReady) {
       if (tajineVidDur) { try { tajineVid.currentTime = open * (tajineVidDur - 0.05); } catch (e) {} }
@@ -168,9 +216,31 @@
     for (var i = 0; i < tajineDishes.length; i++) {
       var o = Math.max(0, Math.min(1, 1 - Math.abs(p - TAJINE_C[i]) / TAJINE_W));
       tajineDishes[i].style.opacity = o.toFixed(3);
+      // gentle scale drift on the crossfade — adds depth without shouting
+      tajineDishes[i].style.transform = 'scale(' + (0.965 + o * 0.035).toFixed(4) + ')';
       var d = Math.abs(p - TAJINE_C[i]); if (d < bestd) { bestd = d; best = i; }
     }
     if (best !== tajineActive) { tajineActive = best; setTajineName(best); }
+  }
+
+  // Scroll events arrive in jumps during momentum scrolling (especially on
+  // phones) — ease the shown progress toward the raw value in a rAF loop so
+  // the lid + dish crossfades glide instead of stepping.
+  var tjTarget = 0, tjShown = -1, tjAnimating = false;
+  function tjTick() {
+    var d = tjTarget - tjShown;
+    if (Math.abs(d) < 0.0008) {
+      tjShown = tjTarget; applyTajine(tjShown); tjAnimating = false; return;
+    }
+    tjShown += d * 0.16;
+    applyTajine(tjShown);
+    requestAnimationFrame(tjTick);
+  }
+  function updateTajine(p) {
+    if (!tajineSection) return;
+    tjTarget = Math.max(0, Math.min(1, p));
+    if (tjShown < 0) { tjShown = tjTarget; applyTajine(tjShown); return; }  // first paint: snap
+    if (!tjAnimating) { tjAnimating = true; requestAnimationFrame(tjTick); }
   }
 
   var mqDesktop = window.matchMedia('(min-width:1024px) and (pointer:fine)');
