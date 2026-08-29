@@ -1,0 +1,9 @@
+{
+  "name": "kawtar-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Café Bistro Kawtar — site + réservations",
+  "dependencies": {
+    "nodemailer": "^6.9.14"
+  }
+}

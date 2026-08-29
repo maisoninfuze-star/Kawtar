@@ -17,6 +17,19 @@
   var anims = [].slice.call(document.querySelectorAll('[data-anim]'));
   var navLinkEls = [].slice.call(document.querySelectorAll('.nav__link'));
 
+  /* ---------- promo strip: keep the fixed nav offset in sync ---------- */
+  var promoEl = document.querySelector('[data-promo]');
+  if (promoEl) {
+    var syncPromoH = function () {
+      docEl.style.setProperty('--promo-h', promoEl.offsetHeight + 'px');
+    };
+    syncPromoH();
+    window.addEventListener('resize', syncPromoH, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(syncPromoH).observe(promoEl);
+    // language swap changes the string length → height can change on mobile
+    document.addEventListener('kawtar:lang', syncPromoH);
+  }
+
   /* ---------- scroll-scrubbed videos (hero tajine + story tea-pour) ----------
      mode "exit"  — closed at rest, scrubs open as the panel scrolls away (hero)
      mode "cross" — scrubs across enter → centre → exit (story)                */
@@ -546,6 +559,7 @@
     langOpts.forEach(function (o) { o.classList.toggle('is-on', o.getAttribute('data-lang-opt') === currentLang); });
     try { localStorage.setItem('kawtarLang', currentLang); } catch (e) {}
     if (typeof tajineActive !== 'undefined' && tajineActive >= 0) setTajineName(tajineActive);
+    document.dispatchEvent(new CustomEvent('kawtar:lang', { detail: currentLang }));
   }
 
   (function () {
@@ -645,6 +659,14 @@
     if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
   });
 
+  /* Reservations POST to our own endpoint (/api/reserve on Vercel), which
+     validates the booking and emails the restaurant over SMTP. No third-party
+     form service involved. */
+  var RESERVE_ENDPOINT = '/api/reserve';
+
+  var errEl = document.getElementById('reserveErr');
+  var submitBtn = form.querySelector('.rform__submit');
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var ok = true;
@@ -655,29 +677,67 @@
     });
     if (!ok) return;
 
+    // honeypot: only bots fill this
+    var hp = form.querySelector('[name="company"]');
+    if (hp && hp.value) { showDone(); return; }
+
     var name = form.querySelector('[name="name"]').value.trim();
+    var phone = form.querySelector('[name="phone"]').value.trim();
     var date = form.querySelector('[name="date"]').value;
     var time = form.querySelector('[name="time"]').value;
     var guests = form.querySelector('[name="guests"]').value;
+    var noteEl = form.querySelector('[name="note"]');
+    var note = noteEl ? noteEl.value.trim() : '';
+
+    var payload = {
+      name: name,
+      phone: phone,
+      date: date,
+      time: time,
+      guests: guests,
+      note: note,
+      company: hp ? hp.value : '',      // honeypot, checked server-side too
+      language: currentLang
+    };
 
     var en = currentLang === 'en';
-    var nm = esc(name || (en ? 'friend' : 'l’ami'));
-    var dHead = done.querySelector('[data-done-head]');
-    var dBody = done.querySelector('[data-done-body]');
-    if (en) {
-      dHead.innerHTML = 'Thank you, <span>' + nm + '</span>.';
-      dBody.innerHTML = 'Your request for <span>' + guests + ' guest' + (guests === '1' ? '' : 's') +
-        '</span> on ' + formatDate(date, 'en') + ' at ' + time +
-        ' has been received. We’ll call you shortly to confirm. <em>Bslama.</em>';
-    } else {
-      dHead.innerHTML = 'Merci, <span>' + nm + '</span>.';
-      dBody.innerHTML = 'Votre demande pour <span>' + guests + ' couvert' + (guests === '1' ? '' : 's') +
-        '</span> le ' + formatDate(date, 'fr') + ' à ' + time +
-        ' est bien reçue. Nous vous rappelons sous peu pour confirmer. <em>Bslama.</em>';
+    if (errEl) errEl.hidden = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = en ? 'Sending…' : 'Envoi…';
+
+    function fail() {
+      submitBtn.disabled = false;
+      submitBtn.textContent = en ? 'Confirm request' : 'Confirmer la demande';
+      if (errEl) errEl.hidden = false;
     }
 
-    form.hidden = true;
-    done.hidden = false;
+    fetch(RESERVE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      showDone();
+    }).catch(fail);
+
+    function showDone() {
+      var nm = esc(name || (en ? 'friend' : 'l’ami'));
+      var dHead = done.querySelector('[data-done-head]');
+      var dBody = done.querySelector('[data-done-body]');
+      if (en) {
+        dHead.innerHTML = 'Thank you, <span>' + nm + '</span>.';
+        dBody.innerHTML = 'Your request for <span>' + guests + ' guest' + (guests === '1' ? '' : 's') +
+          '</span> on ' + formatDate(date, 'en') + ' at ' + time +
+          ' has been received. We’ll call you shortly to confirm. <em>Bslama.</em>';
+      } else {
+        dHead.innerHTML = 'Merci, <span>' + nm + '</span>.';
+        dBody.innerHTML = 'Votre demande pour <span>' + guests + ' couvert' + (guests === '1' ? '' : 's') +
+          '</span> le ' + formatDate(date, 'fr') + ' à ' + time +
+          ' est bien reçue. Nous vous rappelons sous peu pour confirmer. <em>Bslama.</em>';
+      }
+      form.hidden = true;
+      done.hidden = false;
+    }
   });
 
   function esc(s) {
