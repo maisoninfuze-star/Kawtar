@@ -22,7 +22,7 @@ const nodemailer = require('nodemailer');
    the browser, which keeps the URL out of public JS and avoids CORS entirely.
    Override per-environment with the GHL_WEBHOOK_URL env var. */
 const GHL_WEBHOOK_FALLBACK =
-  'https://services.leadconnectorhq.com/hooks/YuXhkj3MjZlhLqUgeeMA/webhook-trigger/eec4ff7f-9568-42b1-9027-08233bdaae0d';
+  'https://services.leadconnectorhq.com/hooks/YuXhkj3MjZlhLqUgeeMA/webhook-trigger/6fd483e2-d16f-4e98-a1da-5647d0d7d5e0';
 
 const MAX_LEN = { name: 80, phone: 40, guests: 8, note: 500 };
 const hits = new Map();                     // naive per-instance rate limit
