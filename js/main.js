@@ -670,11 +670,15 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var ok = true;
-    ['name', 'phone', 'date', 'time'].forEach(function (n) {
+    ['name', 'phone', 'email', 'date', 'time'].forEach(function (n) {
       var f = form.querySelector('[name="' + n + '"]');
       if (f && !f.value.trim()) { f.classList.add('invalid'); ok = false; }
       else if (f) f.classList.remove('invalid');
     });
+    var emailEl = form.querySelector('[name="email"]');
+    if (emailEl && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailEl.value.trim())) {
+      emailEl.classList.add('invalid'); ok = false;
+    }
     if (!ok) return;
 
     // honeypot: only bots fill this
@@ -683,6 +687,7 @@
 
     var name = form.querySelector('[name="name"]').value.trim();
     var phone = form.querySelector('[name="phone"]').value.trim();
+    var email = form.querySelector('[name="email"]').value.trim();
     var date = form.querySelector('[name="date"]').value;
     var time = form.querySelector('[name="time"]').value;
     var guests = form.querySelector('[name="guests"]').value;
@@ -692,6 +697,7 @@
     var payload = {
       name: name,
       phone: phone,
+      email: email,
       date: date,
       time: time,
       guests: guests,

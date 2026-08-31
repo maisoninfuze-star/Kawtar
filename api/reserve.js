@@ -24,7 +24,7 @@ const nodemailer = require('nodemailer');
 const GHL_WEBHOOK_FALLBACK =
   'https://services.leadconnectorhq.com/hooks/YuXhkj3MjZlhLqUgeeMA/webhook-trigger/6fd483e2-d16f-4e98-a1da-5647d0d7d5e0';
 
-const MAX_LEN = { name: 80, phone: 40, guests: 8, note: 500 };
+const MAX_LEN = { name: 80, phone: 40, email: 120, guests: 8, note: 500 };
 const hits = new Map();                     // naive per-instance rate limit
 
 function tooMany(ip) {
@@ -47,12 +47,15 @@ module.exports = async (req, res) => {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    const { name, phone, date, time, guests, note, company, language } = body;
+    const { name, phone, email, date, time, guests, note, company, language } = body;
 
     if (company) return res.status(200).json({ ok: true });          // honeypot: bot
 
-    const missing = ['name', 'phone', 'date', 'time'].filter(k => !String(body[k] || '').trim());
+    const missing = ['name', 'phone', 'email', 'date', 'time'].filter(k => !String(body[k] || '').trim());
     if (missing.length) return res.status(400).json({ error: 'missing_fields', missing });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email).trim())) {
+      return res.status(400).json({ error: 'bad_email' });
+    }
 
     for (const [k, max] of Object.entries(MAX_LEN)) {
       if (body[k] && String(body[k]).length > max) {
@@ -79,7 +82,7 @@ module.exports = async (req, res) => {
       : when.toLocaleString('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 
     const rows = [
-      ['Nom', name], ['Téléphone', phone], ['Date & heure', pretty],
+      ['Nom', name], ['Téléphone', phone], ['Courriel', email], ['Date & heure', pretty],
       ['Couverts', guests || '—'], ['Note', note || '—'],
       ['Langue', language === 'en' ? 'English' : 'Français'],
     ];
@@ -98,6 +101,7 @@ module.exports = async (req, res) => {
             last_name: parts.slice(1).join(' '),
             full_name: name,
             phone,
+            email: String(email).trim(),
             reservation_date: date,
             reservation_time: time,
             reservation_when: pretty,
