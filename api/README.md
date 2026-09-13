@@ -51,3 +51,44 @@ Si le courriel ne part pas, l'API renvoie une erreur et le site affiche
 Après le déploiement, faire une vraie réservation sur kawtar.ca.
 Si rien n'arrive : Vercel → **Logs** → filtrer `reserve` (les erreurs y sont
 journalisées, ex. `missing env vars` ou identifiants SMTP refusés).
+
+---
+
+# Livraison — Uber Direct
+
+Livraison en marque blanche : **nos** commandes, livrées par des coursiers Uber, sans
+passer par Uber Eats et sans commission (tarif à la course, à partir de ~7 $ CA).
+
+```
+Client paie → /api/delivery/quote (prix + ETA, avant paiement)
+            → /api/delivery/create (après paiement : dispatch du coursier)
+            → Uber → /api/delivery/webhook (assigné → ramassé → livré)
+```
+
+| Endpoint | Rôle |
+|---|---|
+| `POST /api/delivery/quote` | Frais + ETA pour une adresse (valide 15 min) |
+| `POST /api/delivery/create` | Dispatch après paiement · `prep_minutes` = le coursier arrive quand la nourriture est prête |
+| `GET  /api/delivery/status?id=` | Statut en direct d'une livraison |
+| `POST /api/delivery/webhook` | Reçoit les changements de statut d'Uber (signature HMAC vérifiée) |
+
+## Configuration
+
+1. Compte sur **direct.uber.com** → onglet **Developer** → copier les 3 identifiants
+   **Test mode** (puis Production après approbation + facturation).
+2. Vercel → projet kawtar → **Environment Variables** :
+   `UBER_DIRECT_CLIENT_ID`, `UBER_DIRECT_CLIENT_SECRET`, `UBER_DIRECT_CUSTOMER_ID`,
+   `UBER_DIRECT_WEBHOOK_SECRET` → **Redeploy**.
+3. Dans le dashboard Uber → Developer → **Webhooks** → URL :
+   `https://www.kawtar.ca/api/delivery/webhook`
+4. Adresse de ramassage et téléphone du resto : `api/_lib/uber.js` (`PICKUP`),
+   surchargeables via `PICKUP_*`.
+
+## Test local (sandbox, rien n'est facturé)
+
+```bash
+cp .env.local.example .env.local   # puis remplir les UBER_DIRECT_*
+node scripts/uber-sandbox-test.js  # token → devis → livraison → statut
+```
+
+En mode test, Uber simule un « robo-coursier » qui fait avancer la livraison tout seul.
