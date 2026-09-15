@@ -636,11 +636,9 @@
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
-    // default date = today
-    var d = form.querySelector('input[name="date"]');
-    if (d && !d.value) d.value = new Date().toISOString().slice(0, 10);
-    var first = form.querySelector('input[name="name"]');
-    if (first) setTimeout(function () { first.focus(); }, 60);
+    // GHL calendar lives in an iframe — nothing to prefill; move focus into the dialog
+    var dlg = modal.querySelector('.modal__dialog');
+    if (dlg) setTimeout(function () { if (dlg.focus) dlg.focus(); }, 60);
   }
   function closeModal() {
     modal.classList.remove('is-open');
@@ -659,92 +657,96 @@
     if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
   });
 
-  /* Reservations POST to our own endpoint (/api/reserve on Vercel), which
-     validates the booking and emails the restaurant over SMTP. No third-party
-     form service involved. */
-  var RESERVE_ENDPOINT = '/api/reserve';
+  /* Legacy inline form — the modal now embeds the GHL booking calendar, so this
+     only runs if #reserveForm is ever put back. */
+  if (form) {
+    /* Reservations POST to our own endpoint (/api/reserve on Vercel), which
+       validates the booking and emails the restaurant over SMTP. No third-party
+       form service involved. */
+    var RESERVE_ENDPOINT = '/api/reserve';
 
-  var errEl = document.getElementById('reserveErr');
-  var submitBtn = form.querySelector('.rform__submit');
+    var errEl = document.getElementById('reserveErr');
+    var submitBtn = form.querySelector('.rform__submit');
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var ok = true;
-    ['name', 'phone', 'email', 'date', 'time'].forEach(function (n) {
-      var f = form.querySelector('[name="' + n + '"]');
-      if (f && !f.value.trim()) { f.classList.add('invalid'); ok = false; }
-      else if (f) f.classList.remove('invalid');
-    });
-    var emailEl = form.querySelector('[name="email"]');
-    if (emailEl && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailEl.value.trim())) {
-      emailEl.classList.add('invalid'); ok = false;
-    }
-    if (!ok) return;
-
-    // honeypot: only bots fill this
-    var hp = form.querySelector('[name="company"]');
-    if (hp && hp.value) { showDone(); return; }
-
-    var name = form.querySelector('[name="name"]').value.trim();
-    var phone = form.querySelector('[name="phone"]').value.trim();
-    var email = form.querySelector('[name="email"]').value.trim();
-    var date = form.querySelector('[name="date"]').value;
-    var time = form.querySelector('[name="time"]').value;
-    var guests = form.querySelector('[name="guests"]').value;
-    var noteEl = form.querySelector('[name="note"]');
-    var note = noteEl ? noteEl.value.trim() : '';
-
-    var payload = {
-      name: name,
-      phone: phone,
-      email: email,
-      date: date,
-      time: time,
-      guests: guests,
-      note: note,
-      company: hp ? hp.value : '',      // honeypot, checked server-side too
-      language: currentLang
-    };
-
-    var en = currentLang === 'en';
-    if (errEl) errEl.hidden = true;
-    submitBtn.disabled = true;
-    submitBtn.textContent = en ? 'Sending…' : 'Envoi…';
-
-    function fail() {
-      submitBtn.disabled = false;
-      submitBtn.textContent = en ? 'Confirm request' : 'Confirmer la demande';
-      if (errEl) errEl.hidden = false;
-    }
-
-    fetch(RESERVE_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      showDone();
-    }).catch(fail);
-
-    function showDone() {
-      var nm = esc(name || (en ? 'friend' : 'l’ami'));
-      var dHead = done.querySelector('[data-done-head]');
-      var dBody = done.querySelector('[data-done-body]');
-      if (en) {
-        dHead.innerHTML = 'Thank you, <span>' + nm + '</span>.';
-        dBody.innerHTML = 'Your request for <span>' + guests + ' guest' + (guests === '1' ? '' : 's') +
-          '</span> on ' + formatDate(date, 'en') + ' at ' + time +
-          ' has been received. We’ll call you shortly to confirm. <em>Bslama.</em>';
-      } else {
-        dHead.innerHTML = 'Merci, <span>' + nm + '</span>.';
-        dBody.innerHTML = 'Votre demande pour <span>' + guests + ' couvert' + (guests === '1' ? '' : 's') +
-          '</span> le ' + formatDate(date, 'fr') + ' à ' + time +
-          ' est bien reçue. Nous vous rappelons sous peu pour confirmer. <em>Bslama.</em>';
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var ok = true;
+      ['name', 'phone', 'email', 'date', 'time'].forEach(function (n) {
+        var f = form.querySelector('[name="' + n + '"]');
+        if (f && !f.value.trim()) { f.classList.add('invalid'); ok = false; }
+        else if (f) f.classList.remove('invalid');
+      });
+      var emailEl = form.querySelector('[name="email"]');
+      if (emailEl && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailEl.value.trim())) {
+        emailEl.classList.add('invalid'); ok = false;
       }
-      form.hidden = true;
-      done.hidden = false;
-    }
-  });
+      if (!ok) return;
+
+      // honeypot: only bots fill this
+      var hp = form.querySelector('[name="company"]');
+      if (hp && hp.value) { showDone(); return; }
+
+      var name = form.querySelector('[name="name"]').value.trim();
+      var phone = form.querySelector('[name="phone"]').value.trim();
+      var email = form.querySelector('[name="email"]').value.trim();
+      var date = form.querySelector('[name="date"]').value;
+      var time = form.querySelector('[name="time"]').value;
+      var guests = form.querySelector('[name="guests"]').value;
+      var noteEl = form.querySelector('[name="note"]');
+      var note = noteEl ? noteEl.value.trim() : '';
+
+      var payload = {
+        name: name,
+        phone: phone,
+        email: email,
+        date: date,
+        time: time,
+        guests: guests,
+        note: note,
+        company: hp ? hp.value : '',      // honeypot, checked server-side too
+        language: currentLang
+      };
+
+      var en = currentLang === 'en';
+      if (errEl) errEl.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = en ? 'Sending…' : 'Envoi…';
+
+      function fail() {
+        submitBtn.disabled = false;
+        submitBtn.textContent = en ? 'Confirm request' : 'Confirmer la demande';
+        if (errEl) errEl.hidden = false;
+      }
+
+      fetch(RESERVE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        showDone();
+      }).catch(fail);
+
+      function showDone() {
+        var nm = esc(name || (en ? 'friend' : 'l’ami'));
+        var dHead = done.querySelector('[data-done-head]');
+        var dBody = done.querySelector('[data-done-body]');
+        if (en) {
+          dHead.innerHTML = 'Thank you, <span>' + nm + '</span>.';
+          dBody.innerHTML = 'Your request for <span>' + guests + ' guest' + (guests === '1' ? '' : 's') +
+            '</span> on ' + formatDate(date, 'en') + ' at ' + time +
+            ' has been received. We’ll call you shortly to confirm. <em>Bslama.</em>';
+        } else {
+          dHead.innerHTML = 'Merci, <span>' + nm + '</span>.';
+          dBody.innerHTML = 'Votre demande pour <span>' + guests + ' couvert' + (guests === '1' ? '' : 's') +
+            '</span> le ' + formatDate(date, 'fr') + ' à ' + time +
+            ' est bien reçue. Nous vous rappelons sous peu pour confirmer. <em>Bslama.</em>';
+        }
+        form.hidden = true;
+        done.hidden = false;
+      }
+    });
+  }
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (c) {

@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="./css/styles.css?v=5">
+<link rel="stylesheet" href="./css/styles.css?v=6">
 
 <script type="application/ld+json">
 {
@@ -562,37 +562,18 @@
     </div>
     <div class="eyebrow eyebrow--center" data-en="Reservation">Réservation</div>
     <h2 class="modal__title display" id="reserveTitle" data-en="A table awaits you">Une table vous attend</h2>
-    <form class="rform" id="reserveForm" novalidate>
-      <div class="rform__row">
-        <label class="field"><span data-en="Name">Nom</span><input type="text" name="name" required autocomplete="name" placeholder="Votre nom" data-en-ph="Your name"></label>
-        <label class="field"><span data-en="Phone">Téléphone</span><input type="tel" name="phone" required autocomplete="tel" placeholder="+1 ..."></label>
-      </div>
-      <label class="field"><span data-en="Email">Courriel</span><input type="email" name="email" required autocomplete="email" inputmode="email" placeholder="vous@exemple.com" data-en-ph="you@example.com"></label>
-      <div class="rform__row">
-        <label class="field"><span data-en="Date">Date</span><input type="date" name="date" required></label>
-        <label class="field"><span data-en="Time">Heure</span><input type="time" name="time" required value="19:00"></label>
-        <label class="field field--small"><span data-en="Guests">Couverts</span>
-          <select name="guests">
-            <option>1</option><option>2</option><option selected>3</option><option>4</option>
-            <option>5</option><option>6</option><option>7</option><option>8+</option>
-          </select>
-        </label>
-      </div>
-      <label class="field"><span data-en="A note? (optional)">Une note ? (facultatif)</span><input type="text" name="note" placeholder="Occasion, allergies, préférences..." data-en-ph="Occasion, allergies, preferences..."></label>
-      <div class="rform__hp" aria-hidden="true"><label>Ne pas remplir<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
-      <button class="btn btn--gold rform__submit" type="submit" data-en="Confirm request">Confirmer la demande</button>
-      <p class="rform__err" id="reserveErr" hidden data-en="We couldn't send your request. Please call us at <a href=&quot;tel:+15148910831&quot;>514 891-0831</a> and we'll book you right away.">Nous n'avons pas pu envoyer votre demande. Appelez-nous au <a href="tel:+15148910831">514 891-0831</a> et nous vous réservons une table tout de suite.</p>
-      <p class="rform__fine" data-en="We'll call you back to confirm. For same-day, call us at <a href=&quot;tel:+15148910831&quot;>514 891-0831</a>.">Nous vous rappelons pour confirmer. Pour aujourd'hui, appelez-nous au <a href="tel:+15148910831">514 891-0831</a>.</p>
-    </form>
-    <div class="rform__done" id="reserveDone" hidden>
-      <div class="rform__done-mark" aria-hidden="true">✦</div>
-      <h3 class="display" data-done-head>Merci, <span data-done-name>l'ami</span>.</h3>
-      <p data-done-body>Votre demande pour <span data-done-detail>une table</span> est bien reçue. Nous vous rappelons sous peu pour confirmer. <em>Bslama.</em></p>
-      <button class="btn btn--ghost" data-modal-close type="button" data-en="Close">Fermer</button>
+    <!-- Réservations : calendrier GoHighLevel (créneaux, confirmations et rappels gérés par GHL) -->
+    <div class="rcal" data-rcal>
+      <iframe class="rcal__frame" src="https://api.b12ventures.com/widget/booking/F79vXJCpUbWakkx38Q55"
+              style="width:100%;border:none;overflow:hidden" scrolling="no"
+              id="F79vXJCpUbWakkx38Q55_kawtar" title="Réserver une table — calendrier"></iframe>
+    </div>
+    <p class="rform__fine" data-en="For same-day or groups of 8+, call us at <a href=&quot;tel:+15148910831&quot;>514 891-0831</a>.">Pour aujourd'hui ou les groupes de 8 et plus, appelez-nous au <a href="tel:+15148910831">514 891-0831</a>.</p>
     </div>
   </div>
 </div>
 
-<script src="./js/main.js?v=5"></script>
+<script src="./js/main.js?v=6"></script>
+<script src="https://api.b12ventures.com/js/form_embed.js" type="text/javascript" defer></script>
 </body>
 </html>
