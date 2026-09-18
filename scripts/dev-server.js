@@ -26,7 +26,19 @@ async function readBody(req) {
 http.createServer(async (req, res) => {
   const u = url.parse(req.url, true); resHelpers(res);
   if (u.pathname.startsWith('/api/')) {
-    const file = path.join(ROOT, u.pathname.replace(/\/$/, '') + '.js');
+    const base = path.join(ROOT, u.pathname.replace(/\/$/, ''));
+    // Web-standard handlers (export async function POST(request)) — the webhooks live here
+    if (fs.existsSync(base + '.mjs')) {
+      const mod = await import(base + '.mjs?t=' + Date.now());
+      const h = mod[req.method] || mod.default;
+      if (!h) return res.status(405).json({ error: 'method_not_allowed' });
+      const chunks = []; for await (const c of req) chunks.push(c);
+      const out = await h(new Request('http://localhost' + req.url, { method: req.method, headers: req.headers,
+        body: ['GET', 'HEAD'].includes(req.method) ? undefined : Buffer.concat(chunks) }));
+      res.statusCode = out.status; out.headers.forEach((v, k) => res.setHeader(k, v));
+      return res.end(Buffer.from(await out.arrayBuffer()));
+    }
+    const file = base + '.js';
     if (!fs.existsSync(file)) return res.status(404).json({ error: 'no_such_function' });
     delete require.cache[require.resolve(file)];
     const fn = require(file); req.query = u.query;

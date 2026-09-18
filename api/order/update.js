@@ -12,11 +12,12 @@ const { notify } = require('../_lib/notify');
 const { PICKUP, uber, addressString, isoInMinutes } = require('../_lib/uber');
 const { CFG } = require('../_lib/menu');
 
+const QUOTE_FRESH_MS = 12 * 60_000;   // Uber quotes expire after 15 min; don't send one that is about to
+
 async function bookCourier(o, prep) {
   const a = o.address || {};
   const items = (o.cart_lines || []).map(l => ({ name: l.fr.slice(0, 100), quantity: l.qty, size: 'small' }));
-  return uber('/deliveries', { method: 'POST', body: {
-    ...(o.uber && o.uber.quote_id ? { quote_id: o.uber.quote_id } : {}),   // stale (>15 min) → Uber re-quotes
+  const body = {
     pickup_name: PICKUP.name, pickup_address: addressString(PICKUP.address),
     pickup_phone_number: PICKUP.phone, pickup_notes: `${PICKUP.notes} Commande ${o.order_no}.`,
     pickup_business_name: PICKUP.name,
@@ -28,7 +29,20 @@ async function bookCourier(o, prep) {
     pickup_ready_dt: isoInMinutes(prep),
     ...(o.tip_cents ? { tip: o.tip_cents } : {}),
     deliverable_action: 'deliverable_action_meet_at_door', undeliverable_action: 'return',
-  }});
+    // Sandbox only: UBER_DIRECT_ROBOCOURIER=auto makes Uber's robo-courier walk the delivery
+    // through pickup → delivered (~2.5 min) and fire real webhooks. Remove the var for production.
+    ...(process.env.UBER_DIRECT_ROBOCOURIER ? { test_specifications: { robo_courier_specification: { mode: process.env.UBER_DIRECT_ROBOCOURIER } } } : {}),
+  };
+  // Reuse the checkout quote while it is fresh (locks the price); otherwise Uber re-quotes at creation.
+  const fresh = o.uber_quote && o.uber_quote.id && Date.now() - o.created < QUOTE_FRESH_MS;
+  if (!fresh) return uber('/deliveries', { method: 'POST', body });
+  try {
+    return await uber('/deliveries', { method: 'POST', body: { quote_id: o.uber_quote.id, ...body } });
+  } catch (e) {
+    if (e.status !== 400 || !/quote/i.test(String(e.code) + String(e.message))) throw e;
+    console.warn('uber: quote rejected (' + e.code + '), re-booking without quote_id');
+    return uber('/deliveries', { method: 'POST', body });
+  }
 }
 
 module.exports = async (req, res) => {
@@ -50,7 +64,7 @@ module.exports = async (req, res) => {
           try {
             const d = await bookCourier(o, prep);
             Object.assign(patch, { uber_delivery_id: d.id, uber_tracking_url: d.tracking_url, uber_status: d.status,
-                                   uber_fee_cents: d.fee != null ? d.fee : ((o.uber && o.uber.fee_cents) || '') });
+                                   uber_fee_cents: d.fee != null ? d.fee : ((o.uber_quote && o.uber_quote.fee_cents) || '') });
           } catch (e) {
             console.error('uber booking failed:', e.message, e.detail || '');
             out = await updateOrder(o.id, { ...patch, uber_status: 'booking_failed' });
@@ -91,3 +105,5 @@ module.exports = async (req, res) => {
     return res.status(e.status || 500).json({ error: e.code || 'error', message: e.message });
   }
 };
+
+module.exports.bookCourier = bookCourier;   // exposed for scripts/uber-sandbox-test.js

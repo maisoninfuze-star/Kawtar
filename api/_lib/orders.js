@@ -33,8 +33,10 @@ function fromPI(pi) {
     tip_cents: +m.tip_cents || 0, tax_cents: +m.tax_cents || 0,
     prep_minutes: m.prep_minutes ? +m.prep_minutes : null,
     ready_at: m.ready_at || null,
+    // quote taken at checkout (valid ~15 min) vs. the courier actually booked at accept time
+    uber_quote: m.uber_quote_id ? { id: m.uber_quote_id, fee_cents: +m.uber_fee_cents || 0 } : null,
     uber: m.uber_delivery_id ? { id: m.uber_delivery_id, tracking_url: m.uber_tracking_url, status: m.uber_status,
-                                 quote_id: m.uber_quote_id, fee_cents: +m.uber_fee_cents || 0 } : null,
+                                 fee_cents: +m.uber_fee_cents || 0 } : null,
     session_id: m.session_id || null,
     timeline: { paid_at: m.paid_at, accepted_at: m.accepted_at, ready_at: m.ready_at, completed_at: m.completed_at, cancelled_at: m.cancelled_at },
   };
