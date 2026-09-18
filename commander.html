@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commander — Kawtar · Café Bistro Marocain · Laval</title>
+<meta name="description" content="Commandez en ligne chez Café Bistro Kawtar — ramassage ou livraison à Laval.">
+<meta name="theme-color" content="#15100d">
+<link rel="icon" href="./assets/brand/kawtar-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/styles.css?v=6">
+<link rel="stylesheet" href="./css/order.css?v=1">
+<script>(function(){try{if(localStorage.getItem('kawtarLang')==='en')document.documentElement.setAttribute('lang','en');}catch(e){}})();</script>
+</head>
+<body class="order-page">
+
+<header class="obar">
+  <a class="obar__brand" href="./index.html" aria-label="Kawtar — accueil">
+    <img src="./assets/brand/kawtar-icon.png" alt="" width="40" height="40" class="nav__mark">
+    <span class="nav__name">KAWTAR</span>
+  </a>
+  <div class="obar__right">
+    <button class="lang" data-lang-toggle type="button" aria-label="Français / English">
+      <span class="lang__opt" data-lang-opt="fr">FR</span><span class="lang__sep">/</span><span class="lang__opt" data-lang-opt="en">EN</span>
+    </button>
+    <button class="cartbtn" data-cart-open type="button" aria-label="Panier">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h15l-1.5 8.5H7.5zM6 6 5 3H2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+      <span class="cartbtn__count" data-cart-count>0</span>
+      <span class="cartbtn__total" data-cart-total>0,00 $</span>
+    </button>
+  </div>
+</header>
+
+<main class="owrap">
+  <section class="ohead">
+    <div class="eyebrow eyebrow--center" data-en="Order online">Commander en ligne</div>
+    <h1 class="display display--center" data-en="Kawtar, to go.">Kawtar, à emporter.</h1>
+    <p class="lede order__lede" data-en="The same kitchen, the same care — ready for pickup or delivered warm to your door.">La même cuisine, le même soin — à récupérer sur place ou livré chaud jusqu'à votre porte.</p>
+
+    <div class="modeseg" role="tablist" aria-label="Mode">
+      <button class="modeseg__btn is-on" data-mode="pickup" role="tab" aria-selected="true" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a1 1 0 0 1 1 1v18l-7-3.4L5 21V3a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span data-en="Pickup">Ramassage</span><small data-en="ready in ~25 min">prêt en ~25 min</small>
+      </button>
+      <button class="modeseg__btn" data-mode="delivery" role="tab" aria-selected="false" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="17.5" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="17.5" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-en="Delivery">Livraison</span><small data-delivery-blurb data-en="6.99 $ · free over 45 $">6,99 $ · gratuite dès 45 $</small>
+      </button>
+    </div>
+    <p class="ohead__closed" data-closed hidden data-en="Online ordering is currently closed. Call us at <a href='tel:+15148910831'>514 891-0831</a>.">La commande en ligne est fermée pour le moment. Appelez-nous au <a href="tel:+15148910831">514 891-0831</a>.</p>
+  </section>
+
+  <nav class="cattabs" data-cattabs aria-label="Catégories"></nav>
+  <section class="menu" data-menu aria-live="polite"><p class="menu__loading" data-en="Loading the menu…">Chargement du menu…</p></section>
+</main>
+
+<!-- ============ CART DRAWER ============ -->
+<div class="drawer" data-drawer aria-hidden="true">
+  <div class="drawer__overlay" data-cart-close></div>
+  <aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <header class="drawer__head">
+      <h2 class="drawer__title" id="cartTitle" data-en="Your order">Votre commande</h2>
+      <button class="modal__close" data-cart-close type="button" aria-label="Fermer">&times;</button>
+    </header>
+
+    <div class="drawer__body">
+      <div class="cart" data-cart-lines></div>
+      <p class="cart__empty" data-cart-empty data-en="Your cart is empty. Add a few dishes from the menu.">Votre panier est vide. Ajoutez quelques plats du menu.</p>
+
+      <form class="oform" id="orderForm" novalidate hidden data-oform>
+        <div class="oform__sec">
+          <h3 class="oform__h" data-en="Your details">Vos coordonnées</h3>
+          <div class="rform__row">
+            <label class="field"><span data-en="Name">Nom</span><input type="text" name="name" required autocomplete="name" placeholder="Votre nom" data-en-ph="Your name"></label>
+            <label class="field"><span data-en="Phone">Téléphone</span><input type="tel" name="phone" required autocomplete="tel" inputmode="tel" placeholder="514 000-0000"></label>
+          </div>
+          <label class="field"><span data-en="Email (receipt)">Courriel (reçu)</span><input type="email" name="email" required autocomplete="email" inputmode="email" placeholder="vous@exemple.com" data-en-ph="you@example.com"></label>
+        </div>
+
+        <div class="oform__sec" data-delivery-fields hidden>
+          <h3 class="oform__h" data-en="Delivery address">Adresse de livraison</h3>
+          <label class="field"><span data-en="Street address">Adresse</span><input type="text" name="street" autocomplete="street-address" placeholder="123 rue Exemple, app. 4" data-en-ph="123 Example St, apt 4"></label>
+          <div class="rform__row">
+            <label class="field"><span data-en="City">Ville</span><input type="text" name="city" autocomplete="address-level2" value="Laval"></label>
+            <label class="field field--small"><span data-en="Postal code">Code postal</span><input type="text" name="postal" autocomplete="postal-code" placeholder="H7N 1H8" style="text-transform:uppercase"></label>
+          </div>
+          <label class="field"><span data-en="Instructions for the courier (optional)">Instructions pour le livreur (facultatif)</span><input type="text" name="dropoff_notes" placeholder="Sonnez au 2, porte arrière…" data-en-ph="Ring #2, back door…"></label>
+          <p class="oform__zone" data-zone></p>
+        </div>
+
+        <div class="oform__sec">
+          <h3 class="oform__h" data-tip-h data-en="Tip">Pourboire</h3>
+          <div class="tips" data-tips></div>
+        </div>
+
+        <label class="field"><span data-en="A note for the kitchen? (optional)">Une note pour la cuisine ? (facultatif)</span><input type="text" name="notes" placeholder="Allergies, sans oignons…" data-en-ph="Allergies, no onions…"></label>
+      </form>
+    </div>
+
+    <footer class="drawer__foot" data-cart-foot hidden>
+      <dl class="totals">
+        <div><dt data-en="Subtotal">Sous-total</dt><dd data-t-sub>0,00 $</dd></div>
+        <div data-t-del-row hidden><dt data-en="Delivery">Livraison</dt><dd data-t-del>0,00 $</dd></div>
+        <div><dt>TPS + TVQ</dt><dd data-t-tax>0,00 $</dd></div>
+        <div data-t-tip-row hidden><dt data-en="Tip">Pourboire</dt><dd data-t-tip>0,00 $</dd></div>
+        <div class="totals__total"><dt>Total</dt><dd data-t-total>0,00 $</dd></div>
+      </dl>
+      <p class="oform__err" data-oerr hidden></p>
+      <button class="btn btn--gold drawer__pay" data-pay type="button"><span data-en="Pay securely">Payer en toute sécurité</span> · <b data-pay-total>0,00 $</b></button>
+      <p class="rform__fine" data-en="Secure payment by Stripe · Minimum order 15 $">Paiement sécurisé par Stripe · Commande minimum 15 $</p>
+    </footer>
+  </aside>
+</div>
+
+<!-- variant / note chooser -->
+<div class="modal" id="pickModal" aria-hidden="true">
+  <div class="modal__overlay" data-pick-close></div>
+  <div class="modal__dialog modal__dialog--sm" role="dialog" aria-modal="true">
+    <button class="modal__close" data-pick-close type="button" aria-label="Fermer">&times;</button>
+    <h3 class="pick__title" data-pick-title></h3>
+    <p class="pick__desc" data-pick-desc></p>
+    <div class="pick__variants" data-pick-variants></div>
+    <label class="field"><span data-en="Note (optional)">Note (facultatif)</span><input type="text" data-pick-note placeholder="Sans coriandre…" data-en-ph="No coriander…"></label>
+    <div class="pick__qty"><button type="button" data-pick-dec aria-label="Moins">−</button><span data-pick-qty>1</span><button type="button" data-pick-inc aria-label="Plus">+</button></div>
+    <button class="btn btn--gold pick__add" data-pick-add type="button"><span data-en="Add">Ajouter</span> · <b data-pick-price></b></button>
+  </div>
+</div>
+
+<script src="./js/order.js?v=1"></script>
+</body>
+</html>

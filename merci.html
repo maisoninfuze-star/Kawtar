@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merci — Kawtar · Café Bistro</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="./assets/brand/kawtar-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/styles.css?v=6"><link rel="stylesheet" href="./css/order.css?v=1">
+<style>
+  .thanks { max-width: 640px; margin: 0 auto; padding: clamp(40px,8vh,90px) var(--pad-x) 100px; text-align: center; }
+  .thanks__mark { font-size: 44px; color: var(--gold); }
+  .thanks__no { font-family: var(--serif); font-size: 15px; letter-spacing: .2em; color: var(--gold-pale); margin: 14px 0 0; text-transform: uppercase; }
+  .thanks h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(34px,5vw,52px); margin: 8px 0 12px; color: var(--cream); }
+  .thanks p { color: var(--taupe); line-height: 1.7; }
+  .steps { display: flex; justify-content: center; gap: 0; margin: 34px 0 10px; }
+  .step { flex: 1; max-width: 150px; text-align: center; position: relative; color: var(--dim); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+  .step::before { content: ""; display: block; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto 10px; border: 1px solid var(--line-strong); background: var(--bg); }
+  .step::after { content: ""; position: absolute; top: 6px; left: 50%; width: 100%; height: 1px; background: var(--line); z-index: -1; }
+  .step:last-child::after { display: none; }
+  .step.is-done::before, .step.is-on::before { background: var(--gold); border-color: var(--gold); }
+  .step.is-on { color: var(--gold-lt); }
+  .recap { margin: 30px auto 0; text-align: left; border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; background: var(--bg-card); }
+  .recap p { margin: 4px 0; display: flex; justify-content: space-between; color: var(--cream); font-size: 15px; }
+  .recap p small { color: var(--dim); }
+  .recap .tot { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 10px; font-family: var(--serif); font-size: 20px; }
+  .track { display: inline-flex; margin-top: 26px; }
+  .addr { color: var(--taupe); font-size: 14px; margin-top: 14px; }
+</style>
+</head>
+<body class="order-page">
+<header class="obar"><a class="obar__brand" href="./index.html"><img src="./assets/brand/kawtar-icon.png" alt="" width="40" height="40" class="nav__mark"><span class="nav__name">KAWTAR</span></a></header>
+<main class="thanks" data-thanks>
+  <div class="thanks__mark">✦</div>
+  <p class="thanks__no" data-no>Commande</p>
+  <h1 data-h>Merci !</h1>
+  <p data-p>Votre paiement est confirmé. La cuisine reçoit votre commande à l'instant.</p>
+  <div class="steps" data-steps></div>
+  <a class="btn btn--gold track" data-track hidden target="_blank" rel="noopener">Suivre ma livraison</a>
+  <p class="addr" data-addr></p>
+  <div class="recap" data-recap hidden></div>
+  <p style="margin-top:34px;font-size:13px"><a href="./commander.html" style="color:var(--gold-lt)">← Retour au menu</a> &nbsp;·&nbsp; <a href="tel:+15148910831" style="color:var(--gold-lt)">514 891-0831</a></p>
+</main>
+<script>
+(function(){
+  var sid=new URLSearchParams(location.search).get('s'); if(!sid) return;
+  var en=(document.documentElement.lang==='en')||(function(){try{return localStorage.getItem('kawtarLang')==='en'}catch(e){return false}})();
+  var T=function(f,e){return en?e:f}, money=function(c){return en?'$'+(c/100).toFixed(2):(c/100).toFixed(2).replace('.',',')+' $'};
+  var STEPS={pickup:[['new','Reçue','Received'],['accepted','En préparation','Preparing'],['ready','Prête','Ready'],['completed','Remise','Picked up']],
+             delivery:[['new','Reçue','Received'],['accepted','En préparation','Preparing'],['dispatched','En route','On its way'],['delivered','Livrée','Delivered']]};
+  var COPY={new:['La cuisine reçoit votre commande à l’instant.','The kitchen is receiving your order now.'],
+    accepted:['La cuisine prépare votre commande.','The kitchen is preparing your order.'],
+    ready:['Votre commande est prête — venez la récupérer au comptoir.','Your order is ready — come pick it up at the counter.'],
+    dispatched:['Votre commande est en route avec le livreur.','Your order is on its way with the courier.'],
+    delivered:['Livrée. Bon appétit !','Delivered. Enjoy!'], completed:['Merci et à bientôt !','Thank you, see you soon!'],
+    cancelled:['Cette commande a été annulée et remboursée. Appelez-nous si vous avez des questions.','This order was cancelled and refunded. Call us with any questions.'],
+    pending_payment:['Confirmation du paiement en cours…','Confirming your payment…']};
+  var el=function(s){return document.querySelector(s)};
+  function render(o){
+    el('[data-no]').textContent=T('Commande ','Order ')+(o.order_no||'');
+    el('[data-h]').textContent=T('Merci, ','Thank you, ')+(o.customer_name||'').split(' ')[0]+' !';
+    el('[data-p]').textContent=(COPY[o.status]||COPY.new)[en?1:0]+(o.status==='accepted'&&o.ready_at?' '+T('Prête vers ','Ready around ')+new Date(o.ready_at).toLocaleTimeString(en?'en-CA':'fr-CA',{hour:'2-digit',minute:'2-digit'})+'.':'');
+    var steps=STEPS[o.mode]||STEPS.pickup, idx=steps.findIndex(function(s){return s[0]===o.status}); if(o.status==='ready'&&o.mode==='delivery') idx=1;
+    el('[data-steps]').innerHTML=steps.map(function(s,i){return '<div class="step '+(i<idx?'is-done':i===idx?'is-on':'')+'">'+s[en?2:1]+'</div>'}).join('');
+    var tr=el('[data-track]'); tr.hidden=!o.tracking_url; if(o.tracking_url){tr.href=o.tracking_url; tr.textContent=T('Suivre ma livraison','Track my delivery');}
+    if(o.address) el('[data-addr]').textContent=T('Livraison à ','Delivering to ')+[o.address.street,o.address.city,o.address.postal].filter(Boolean).join(', ');
+    if(o.cart_lines){ var r=el('[data-recap]'); r.hidden=false;
+      r.innerHTML=o.cart_lines.map(function(l){return '<p><span>'+l.qty+'× '+(en?l.en:l.fr)+(l.note?' <small>— '+l.note+'</small>':'')+'</span></p>'}).join('')
+        +'<p><span>'+T('Sous-total','Subtotal')+'</span><span>'+money(o.subtotal_cents)+'</span></p>'
+        +(o.delivery_fee_cents?'<p><span>'+T('Livraison','Delivery')+'</span><span>'+money(o.delivery_fee_cents)+'</span></p>':'')
+        +'<p><span>TPS + TVQ</span><span>'+money(o.tax_cents)+'</span></p>'
+        +(o.tip_cents?'<p><span>'+T('Pourboire','Tip')+'</span><span>'+money(o.tip_cents)+'</span></p>':'')
+        +'<p class="tot"><span>Total</span><span>'+money(o.amount_cents)+'</span></p>'; }
+  }
+  var done=false;
+  function poll(){ fetch('/api/order/status?s='+encodeURIComponent(sid)).then(function(r){return r.json()}).then(function(o){
+      if(o&&o.order_no){ render(o); done=['delivered','completed','cancelled'].indexOf(o.status)>=0; }
+    }).catch(function(){}).then(function(){ if(!done) setTimeout(poll, 8000); }); }
+  poll();
+  try{ localStorage.removeItem('kawtarCart'); }catch(e){}
+})();
+</script>
+</body>
+</html>

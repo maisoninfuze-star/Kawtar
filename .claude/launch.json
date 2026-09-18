@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "kawtar-dev", "runtimeExecutable": "node", "runtimeArgs": ["scripts/dev-server.js", "8176"], "port": 8176 }
+  ]
+}

@@ -671,3 +671,4 @@ body.nav-open { overflow: hidden; }
   .modal__dialog { padding: 22px 12px 18px; }
   .rcal__frame { min-height: 900px; }   /* calendar stacks vertically on phones */
 }
+a.ocard { text-decoration: none; color: inherit; }

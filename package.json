@@ -4,6 +4,7 @@
   "private": true,
   "description": "Café Bistro Kawtar — site + réservations",
   "dependencies": {
-    "nodemailer": "^6.9.14"
+    "nodemailer": "^6.9.14",
+    "stripe": "^17.7.0"
   }
 }

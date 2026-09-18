@@ -1,0 +1,516 @@
+{
+  "currency": "CAD",
+  "categories": [
+    {
+      "id": "les-dejeuners",
+      "fr": "Les Déjeuners",
+      "en": "Breakfasts",
+      "note": null,
+      "items": [
+        {
+          "id": "dejeuner-fassi",
+          "fr": "Déjeuner Fassi",
+          "en": "Déjeuner Fassi",
+          "desc_fr": "Œufs, viande séchée, fromage frais, olives noires, pain maison & thé marocain",
+          "desc_en": "Eggs, cured beef, fresh cheese, black olives, house bread & Moroccan tea",
+          "price_cents": 1899
+        },
+        {
+          "id": "dejeuner-beldi",
+          "fr": "Déjeuner Beldi",
+          "en": "Déjeuner Beldi",
+          "desc_fr": "Msemen, harcha, fromage frais, miel, olives, thé marocain & jus d'orange",
+          "desc_en": "Msemen, harcha, fresh cheese, honey, olives, Moroccan tea & orange juice",
+          "price_cents": 1699
+        },
+        {
+          "id": "dejeuner-gourmand",
+          "fr": "Déjeuner Gourmand",
+          "en": "Déjeuner Gourmand",
+          "desc_fr": "Œufs, champignons sautés, mozzarella, pommes de terre grillées, fromage frais, olives noires & thé ou café",
+          "desc_en": "Eggs, sautéed mushrooms, mozzarella, grilled potatoes, fresh cheese, black olives & tea or coffee",
+          "price_cents": 2099
+        }
+      ]
+    },
+    {
+      "id": "mkila",
+      "fr": "Mkila",
+      "en": "Mkila",
+      "note": "œufs, à la poêle",
+      "items": [
+        {
+          "id": "mkila",
+          "fr": "Mkila",
+          "en": "Mkila",
+          "desc_fr": "Œufs, tomates fraîches & épices marocaines",
+          "desc_en": "Eggs, fresh tomatoes & Moroccan spices",
+          "price_cents": 1599
+        },
+        {
+          "id": "mkila-aux-crevettes",
+          "fr": "Mkila aux Crevettes",
+          "en": "Mkila with Shrimp",
+          "desc_fr": "Œufs, crevettes, tomates, olives, fromage frais & thé marocain",
+          "desc_en": "Eggs, shrimp, tomatoes, olives, fresh cheese & Moroccan tea",
+          "price_cents": 1999
+        },
+        {
+          "id": "mkila-kefta",
+          "fr": "Mkila Kefta",
+          "en": "Mkila Kefta",
+          "desc_fr": "Œufs, kefta, tomates & pain maison",
+          "desc_en": "Eggs, kefta, tomatoes & house bread",
+          "price_cents": 1699
+        }
+      ],
+      "note_en": "eggs, pan-style"
+    },
+    {
+      "id": "entrees",
+      "fr": "Entrées",
+      "en": "Starters",
+      "note": null,
+      "items": [
+        {
+          "id": "zaalouk",
+          "fr": "Zaalouk",
+          "en": "Zaalouk",
+          "desc_fr": "Aubergines, tomates, ail, cumin & coriandre",
+          "desc_en": "Eggplant, tomato, garlic, cumin & coriander",
+          "price_cents": 799
+        },
+        {
+          "id": "taktouka",
+          "fr": "Taktouka",
+          "en": "Taktouka",
+          "desc_fr": "Poivrons grillés, tomates, ail, cumin & paprika",
+          "desc_en": "Grilled peppers, tomato, garlic, cumin & paprika",
+          "price_cents": 899
+        },
+        {
+          "id": "salade-marocaine",
+          "fr": "Salade Marocaine",
+          "en": "Moroccan Salad",
+          "desc_fr": "Tomates, oignons, poivrons verts, persil, vinaigrette maison",
+          "desc_en": "Tomato, onion, green pepper, parsley, house vinaigrette",
+          "price_cents": 799
+        },
+        {
+          "id": "hrira",
+          "fr": "Hrira",
+          "en": "Hrira",
+          "desc_fr": "Tomates, lentilles, pois chiches, viande & épices marocaines",
+          "desc_en": "Tomato, lentils, chickpeas, meat & Moroccan spices",
+          "price_cents": 649
+        },
+        {
+          "id": "bissara",
+          "fr": "Bissara",
+          "en": "Bissara",
+          "desc_fr": "Purée de fèves, ail, cumin & huile d'olive",
+          "desc_en": "Fava bean purée, garlic, cumin & olive oil",
+          "price_cents": 799
+        },
+        {
+          "id": "pastilla-au-poulet",
+          "fr": "Pastilla au Poulet",
+          "en": "Chicken Pastilla",
+          "desc_fr": "Poulet, amandes, oignons caramélisés, cannelle, feuille de brick",
+          "desc_en": "Chicken, almonds, caramelised onion, cinnamon, brick pastry",
+          "price_cents": 899
+        },
+        {
+          "id": "pastilla-au-poisson",
+          "fr": "Pastilla au Poisson",
+          "en": "Seafood Pastilla",
+          "desc_fr": "Crevettes, calamars, poisson, vermicelles & épices marocaines",
+          "desc_en": "Shrimp, calamari, fish, vermicelli & Moroccan spices",
+          "price_cents": 999
+        },
+        {
+          "id": "cigare-marocain",
+          "fr": "Cigare Marocain",
+          "en": "Moroccan Cigars",
+          "desc_fr": "Au choix : viande hachée ou poulet",
+          "desc_en": "Your choice: ground beef or chicken",
+          "price_cents": 599
+        }
+      ]
+    },
+    {
+      "id": "tajines",
+      "fr": "Tajines",
+      "en": "Tagines",
+      "note": null,
+      "items": [
+        {
+          "id": "tajine-poulet-olives-frites",
+          "fr": "Tajine Poulet, Olives & Frites",
+          "en": "Chicken Tagine, Olives & Fries",
+          "desc_fr": "Poulet, olives, citron confit, oignons, épices, frites",
+          "desc_en": "Chicken, olives, preserved lemon, onion, spices, fries",
+          "price_cents": 2199
+        },
+        {
+          "id": "tajine-de-veau-artichauts-petits-pois",
+          "fr": "Tajine de Veau, Artichauts & Petits Pois",
+          "en": "Veal Tagine, Artichokes & Peas",
+          "desc_fr": "Veau, artichauts, petits pois, oignons & épices marocaines",
+          "desc_en": "Veal, artichokes, peas, onion & Moroccan spices",
+          "price_cents": 2499
+        },
+        {
+          "id": "tajine-de-veau-oignons-raisins-secs",
+          "fr": "Tajine de Veau, Oignons & Raisins Secs",
+          "en": "Veal Tagine, Onions & Raisins",
+          "desc_fr": "Veau, oignons confits, raisins secs & épices",
+          "desc_en": "Veal, candied onion, raisins & spices",
+          "price_cents": 2199
+        },
+        {
+          "id": "tajine-bouzroug",
+          "fr": "Tajine Bouzroug",
+          "en": "Tajine Bouzroug",
+          "desc_fr": "Moules, tomates, ail, herbes fraîches & épices",
+          "desc_en": "Mussels, tomato, garlic, fresh herbs & spices",
+          "price_cents": 1899
+        }
+      ]
+    },
+    {
+      "id": "couscous",
+      "fr": "Couscous",
+      "en": "Couscous",
+      "note": "Ven · Sam · Dim",
+      "items": [
+        {
+          "id": "couscous-au-veau",
+          "fr": "Couscous au Veau",
+          "en": "Veal Couscous",
+          "desc_fr": "Veau, légumes de saison, pois chiches & semoule",
+          "desc_en": "Veal, seasonal vegetables, chickpeas & semolina",
+          "price_cents": 2499
+        },
+        {
+          "id": "couscous-au-poulet",
+          "fr": "Couscous au Poulet",
+          "en": "Chicken Couscous",
+          "desc_fr": "Poulet, légumes de saison, pois chiches, tfaya & semoule",
+          "desc_en": "Chicken, seasonal vegetables, chickpeas, tfaya & semolina",
+          "price_cents": 2299
+        }
+      ],
+      "available_days": [
+        5,
+        6,
+        0
+      ],
+      "note_en": "Fri · Sat · Sun"
+    },
+    {
+      "id": "sandwichs",
+      "fr": "Sandwichs",
+      "en": "Sandwiches",
+      "note": "+ combo : frites & boisson",
+      "items": [
+        {
+          "id": "poulet",
+          "fr": "Poulet",
+          "en": "Chicken",
+          "desc_fr": "Poitrines de poulet, tomates, oignons, laitue, fromage",
+          "desc_en": "Chicken breast, tomato, onion, lettuce, cheese",
+          "price_cents": 999,
+          "variants": [
+            {
+              "id": "seul",
+              "fr": "Seul",
+              "en": "Alone",
+              "price_cents": 999
+            },
+            {
+              "id": "combo",
+              "fr": "Combo (frites & boisson)",
+              "en": "Combo (fries & drink)",
+              "price_cents": 1399
+            }
+          ]
+        },
+        {
+          "id": "viande-hachee",
+          "fr": "Viande Hachée",
+          "en": "Ground Beef",
+          "desc_fr": "Viande hachée, tomates, oignons, laitue, olives, fromage",
+          "desc_en": "Ground beef, tomato, onion, lettuce, olives, cheese",
+          "price_cents": 999,
+          "variants": [
+            {
+              "id": "seul",
+              "fr": "Seul",
+              "en": "Alone",
+              "price_cents": 999
+            },
+            {
+              "id": "combo",
+              "fr": "Combo (frites & boisson)",
+              "en": "Combo (fries & drink)",
+              "price_cents": 1399
+            }
+          ]
+        },
+        {
+          "id": "thon",
+          "fr": "Thon",
+          "en": "Tuna",
+          "desc_fr": "Thon frais, tomates, carottes, laitue, oignon, olives, harissa",
+          "desc_en": "Fresh tuna, tomato, carrot, lettuce, onion, olives, harissa",
+          "price_cents": 899,
+          "variants": [
+            {
+              "id": "seul",
+              "fr": "Seul",
+              "en": "Alone",
+              "price_cents": 899
+            },
+            {
+              "id": "combo",
+              "fr": "Combo (frites & boisson)",
+              "en": "Combo (fries & drink)",
+              "price_cents": 1299
+            }
+          ]
+        }
+      ],
+      "note_en": "+ combo: fries & drink"
+    },
+    {
+      "id": "desserts",
+      "fr": "Desserts",
+      "en": "Desserts",
+      "note": null,
+      "items": [
+        {
+          "id": "msemen",
+          "fr": "Msemen",
+          "en": "Msemen",
+          "desc_fr": "Crêpe feuilletée marocaine, dorée à la poêle",
+          "desc_en": "Flaky Moroccan pan-fried pancake",
+          "price_cents": 299
+        },
+        {
+          "id": "harcha",
+          "fr": "Harcha",
+          "en": "Harcha",
+          "desc_fr": "Galette de semoule, croustillante & tendre",
+          "desc_en": "Semolina griddle cake, crisp & tender",
+          "price_cents": 299
+        },
+        {
+          "id": "gateaux-marocains",
+          "fr": "Gâteaux Marocains",
+          "en": "Moroccan Pastries",
+          "desc_fr": "Assortiment de pâtisseries aux amandes & miel",
+          "desc_en": "Assorted almond & honey pastries",
+          "price_cents": 599
+        },
+        {
+          "id": "cheesecake",
+          "fr": "Cheesecake",
+          "en": "Cheesecake",
+          "desc_fr": "Onctueux, sur base sablée",
+          "desc_en": "Creamy, on a shortbread base",
+          "price_cents": 899
+        },
+        {
+          "id": "tiramisu",
+          "fr": "Tiramisu",
+          "en": "Tiramisu",
+          "desc_fr": "Mascarpone, café & cacao",
+          "desc_en": "Mascarpone, coffee & cocoa",
+          "price_cents": 799
+        }
+      ]
+    },
+    {
+      "id": "boissons-chaudes",
+      "fr": "Boissons Chaudes",
+      "en": "Hot Drinks",
+      "note": null,
+      "items": [
+        {
+          "id": "the-marocain",
+          "fr": "Thé Marocain traditionnel",
+          "en": "Traditional Moroccan Tea",
+          "desc_fr": "Thé vert à la menthe, versé de haut",
+          "desc_en": "Green tea with fresh mint, poured from a height",
+          "price_cents": 599,
+          "variants": [
+            {
+              "id": "petit",
+              "fr": "Petit",
+              "en": "Small",
+              "price_cents": 599
+            },
+            {
+              "id": "moyen",
+              "fr": "Moyen",
+              "en": "Medium",
+              "price_cents": 999
+            },
+            {
+              "id": "grand",
+              "fr": "Grand",
+              "en": "Large",
+              "price_cents": 1299
+            }
+          ]
+        },
+        {
+          "id": "the-chamali",
+          "fr": "Thé Chamali",
+          "en": "Thé Chamali",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 499
+        },
+        {
+          "id": "cappuccino",
+          "fr": "Cappuccino",
+          "en": "Cappuccino",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 425
+        },
+        {
+          "id": "latte",
+          "fr": "Latte",
+          "en": "Latte",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 425
+        },
+        {
+          "id": "macchiato",
+          "fr": "Macchiato",
+          "en": "Macchiato",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 399
+        },
+        {
+          "id": "allonge",
+          "fr": "Allongé",
+          "en": "Allongé",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 299
+        },
+        {
+          "id": "espresso",
+          "fr": "Espresso",
+          "en": "Espresso",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 299
+        }
+      ]
+    },
+    {
+      "id": "boissons-froides",
+      "fr": "Boissons Froides",
+      "en": "Cold Drinks",
+      "note": null,
+      "items": [
+        {
+          "id": "smoothie",
+          "fr": "Smoothie",
+          "en": "Smoothie",
+          "desc_fr": "Fruits frais",
+          "desc_en": "Fresh fruit",
+          "price_cents": 899
+        },
+        {
+          "id": "za3za3",
+          "fr": "Za3za3",
+          "en": "Za3za3",
+          "desc_fr": "Avocat, noix & dattes",
+          "desc_en": "Avocado, walnuts & dates",
+          "price_cents": 999
+        },
+        {
+          "id": "jus-d-orange",
+          "fr": "Jus d'Orange",
+          "en": "Orange Juice",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 299
+        },
+        {
+          "id": "jus-de-pomme",
+          "fr": "Jus de Pomme",
+          "en": "Apple Juice",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 299
+        },
+        {
+          "id": "the-glace",
+          "fr": "Thé Glacé",
+          "en": "Iced Tea",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 425
+        },
+        {
+          "id": "nestea",
+          "fr": "Nestea",
+          "en": "Nestea",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 325
+        },
+        {
+          "id": "boisson-gazeuse",
+          "fr": "Boisson Gazeuse",
+          "en": "Soft Drink",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 275
+        },
+        {
+          "id": "eau",
+          "fr": "Eau",
+          "en": "Water",
+          "desc_fr": "",
+          "desc_en": "",
+          "price_cents": 250
+        }
+      ]
+    }
+  ],
+  "restaurant": {
+    "name": "Café Bistro Kawtar",
+    "phone": "+15148910831",
+    "address": "101 Boul. de la Concorde O., Laval, QC H7N 1H8",
+    "site": "https://www.kawtar.ca"
+  },
+  "ordering": {
+    "pickup": true,
+    "delivery": true,
+    "delivery_fee_cents": 699,
+    "free_delivery_over_cents": 4500,
+    "max_uber_fee_cents": 1600,
+    "min_order_cents": 1500,
+    "tax": {
+      "tps": 0.05,
+      "tvq": 0.09975
+    },
+    "prep_minutes_default": 25,
+    "tips_cents": [
+      0,
+      200,
+      300,
+      500
+    ]
+  }
+}

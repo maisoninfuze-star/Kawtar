@@ -48,11 +48,35 @@ module.exports = async (req, res) => {
       status: d.status || ev.status, courier: d.courier && d.courier.name,
       dropoff_eta: d.dropoff_eta, at: new Date().toISOString(),
     };
-    // Until the order system has a database, the Vercel log IS the record.
     console.log('uber webhook:', JSON.stringify(summary));
 
-    // TODO(ordering-platform): persist status on the order + notify kitchen/customer
-    //   pickup_complete → "Votre commande est en route"  ·  delivered → "Livrée, bon appétit"
+    // ---- update the order + tell the customer ----
+    if (kind !== 'event.courier_update' && (summary.delivery_id || summary.external_id)) {
+      try {
+        const { findByUberDelivery, updateOrder } = require('../_lib/orders');
+        const { notify } = require('../_lib/notify');
+        const o = await findByUberDelivery(summary.delivery_id, summary.external_id);
+        if (o) {
+          const st = String(summary.status || '');
+          const patch = { uber_status: st };
+          if (d.tracking_url) patch.uber_tracking_url = d.tracking_url;
+          if (d.courier && d.courier.name) patch.uber_courier = d.courier.name;
+          if (st === 'pickup_complete' || st === 'dropoff') {
+            if (o.status !== 'dispatched' && o.status !== 'delivered') patch.order_status = 'dispatched';
+          } else if (st === 'delivered') {
+            patch.order_status = 'delivered'; patch.completed_at = new Date().toISOString();
+          } else if (st === 'canceled' || st === 'returned') {
+            patch.uber_status = st;
+          }
+          const upd = await updateOrder(o.id, patch);
+          if (patch.order_status === 'dispatched' && o.status !== 'dispatched') await notify.dispatched(upd);
+          if (patch.order_status === 'delivered' && o.status !== 'delivered') await notify.delivered(upd);
+          if (st === 'canceled' || st === 'returned') await notify.uberProblem(upd, 'Courier ' + st);
+        } else {
+          console.warn('uber webhook: no order for delivery', summary.delivery_id);
+        }
+      } catch (e) { console.error('uber webhook: order update failed', e.message); }
+    }
 
     return res.status(200).json({ ok: true });
   } catch (err) {
