@@ -659,6 +659,8 @@ body.nav-open { overflow: hidden; }
 }
 .rform__err a { color: var(--gold-lt); }
 .rform__submit[disabled] { opacity: .6; pointer-events: none; }
+.rform__closed { margin: -6px 0 0; font-size: 13px; color: #f0a49c; text-align: center; }
+.field select:disabled { opacity: .5; }
 
 /* ---------- reservation: embedded GHL booking calendar ---------- */
 .rcal {

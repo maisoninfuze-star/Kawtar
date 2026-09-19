@@ -636,9 +636,8 @@
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
-    // GHL calendar lives in an iframe — nothing to prefill; move focus into the dialog
-    var dlg = modal.querySelector('.modal__dialog');
-    if (dlg) setTimeout(function () { if (dlg.focus) dlg.focus(); }, 60);
+    var firstField = modal.querySelector('[name="name"]');
+    if (firstField) setTimeout(function () { firstField.focus(); }, 60);
   }
   function closeModal() {
     modal.classList.remove('is-open');
@@ -657,20 +656,58 @@
     if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
   });
 
-  /* Legacy inline form — the modal now embeds the GHL booking calendar, so this
-     only runs if #reserveForm is ever put back. */
   if (form) {
-    /* Reservations POST to our own endpoint (/api/reserve on Vercel), which
-       validates the booking and emails the restaurant over SMTP. No third-party
-       form service involved. */
+    /* Reservations POST to our own endpoint (/api/reserve on Vercel): it e-mails the
+       guest a FR/EN confirmation, alerts the restaurant and files the contact in GHL. */
     var RESERVE_ENDPOINT = '/api/reserve';
 
     var errEl = document.getElementById('reserveErr');
+    var closedEl = document.getElementById('reserveClosed');
     var submitBtn = form.querySelector('.rform__submit');
+    var dateEl = form.querySelector('[name="date"]');
+    var timeEl = form.querySelector('[name="time"]');
+
+    /* Opening hours (closing hour per weekday, Sun=0 … Sat=6; null = closed).
+       Slots every 30 min from 9:00 until one hour before closing. */
+    var CLOSING = { 0: 19, 1: null, 2: 19, 3: 20, 4: 21, 5: 22, 6: 22 };
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function localISO(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+    function fillSlots() {
+      var v = dateEl.value, prev = timeEl.value;
+      var day = v ? new Date(v + 'T12:00:00').getDay() : null;
+      var close = day === null ? 22 : CLOSING[day];
+      timeEl.innerHTML = '';
+      var closed = v && close === null;
+      if (closedEl) closedEl.hidden = !closed;
+      timeEl.disabled = !!closed;
+      if (closed) return;
+      var today = v === localISO(new Date());
+      var nowMin = new Date().getHours() * 60 + new Date().getMinutes() + 45;   // 45 min notice for same-day
+      for (var m = 9 * 60; m <= (close - 1) * 60; m += 30) {
+        if (today && m < nowMin) continue;
+        var t = pad(Math.floor(m / 60)) + ':' + pad(m % 60);
+        var o = document.createElement('option'); o.value = t;
+        o.textContent = currentLang === 'en' ? t : t.replace(':', ' h ');
+        if (t === prev || (!prev && t === '19:00')) o.selected = true;
+        timeEl.appendChild(o);
+      }
+      if (!timeEl.options.length) {   // same day, too late → nudge to tomorrow
+        var o2 = document.createElement('option'); o2.value = '';
+        o2.textContent = currentLang === 'en' ? 'Too late for today — pick another day' : 'Trop tard pour aujourd’hui — choisissez un autre jour';
+        timeEl.appendChild(o2);
+      }
+    }
+    var tmin = new Date(), tmax = new Date(); tmax.setDate(tmax.getDate() + 60);
+    dateEl.min = localISO(tmin); dateEl.max = localISO(tmax);
+    if (!dateEl.value) { var d0 = new Date(); if (d0.getHours() >= 18) d0.setDate(d0.getDate() + 1); if (d0.getDay() === 1) d0.setDate(d0.getDate() + 1); dateEl.value = localISO(d0); }
+    dateEl.addEventListener('change', fillSlots);
+    document.addEventListener('kawtar:lang', fillSlots);
+    fillSlots();
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var ok = true;
+      if (timeEl.disabled || !timeEl.value) { dateEl.classList.add('invalid'); return; }
       ['name', 'phone', 'email', 'date', 'time'].forEach(function (n) {
         var f = form.querySelector('[name="' + n + '"]');
         if (f && !f.value.trim()) { f.classList.add('invalid'); ok = false; }
@@ -728,19 +765,20 @@
       }).catch(fail);
 
       function showDone() {
-        var nm = esc(name || (en ? 'friend' : 'l’ami'));
+        var nm = esc((name || '').split(/\s+/)[0] || (en ? 'friend' : 'l’ami'));
         var dHead = done.querySelector('[data-done-head]');
         var dBody = done.querySelector('[data-done-body]');
+        var tDisp = en ? time : time.replace(':', ' h ');
         if (en) {
           dHead.innerHTML = 'Thank you, <span>' + nm + '</span>.';
-          dBody.innerHTML = 'Your request for <span>' + guests + ' guest' + (guests === '1' ? '' : 's') +
-            '</span> on ' + formatDate(date, 'en') + ' at ' + time +
-            ' has been received. We’ll call you shortly to confirm. <em>Bslama.</em>';
+          dBody.innerHTML = 'Your table for <span>' + guests + ' guest' + (guests === '1' ? '' : 's') +
+            '</span> on ' + formatDate(date, 'en') + ' at ' + tDisp +
+            ' is booked. A confirmation is on its way to <span>' + esc(email) + '</span>. We only call if something needs adjusting. <em>Bslama.</em>';
         } else {
           dHead.innerHTML = 'Merci, <span>' + nm + '</span>.';
-          dBody.innerHTML = 'Votre demande pour <span>' + guests + ' couvert' + (guests === '1' ? '' : 's') +
-            '</span> le ' + formatDate(date, 'fr') + ' à ' + time +
-            ' est bien reçue. Nous vous rappelons sous peu pour confirmer. <em>Bslama.</em>';
+          dBody.innerHTML = 'Votre table pour <span>' + guests + ' couvert' + (guests === '1' ? '' : 's') +
+            '</span> le ' + formatDate(date, 'fr') + ' à ' + tDisp +
+            ' est enregistrée. Une confirmation part vers <span>' + esc(email) + '</span>. Nous vous appelons seulement si un ajustement est nécessaire. <em>Bslama.</em>';
         }
         form.hidden = true;
         done.hidden = false;

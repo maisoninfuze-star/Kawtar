@@ -252,4 +252,15 @@ async function sendRestaurantEmail(o, event, extra) {
   } catch (e) { console.error('email: restaurant send failed', event, e.message); return false; }
 }
 
-module.exports = { renderCustomerEmail, renderRestaurantEmail, sendCustomerEmail, sendRestaurantEmail, smtpReady, smtp };
+/* Generic send for non-order mail (reservations). Never throws. */
+async function sendRaw({ to, subject, html, text, replyTo, tag = 'mail' }) {
+  if (!to) return false;
+  if (!smtpReady() && !process.env.EMAIL_DRY_RUN) { console.warn('email: SMTP not configured —', tag, 'skipped'); return false; }
+  try {
+    const info = await transport().sendMail({ from: from(), to, replyTo: replyTo || undefined, subject, html, text, headers: { 'X-Kawtar-Event': tag } });
+    console.log('email:', tag, '→', to, info.messageId || 'sent');
+    return true;
+  } catch (e) { console.error('email:', tag, 'send failed', e.message); return false; }
+}
+
+module.exports = { renderCustomerEmail, renderRestaurantEmail, sendCustomerEmail, sendRestaurantEmail, sendRaw, smtpReady, smtp };
