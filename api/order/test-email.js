@@ -3,7 +3,7 @@
    Sends the real customer e-mail template for a sample order — verifies SMTP in
    production without placing a paid order. Also GET → { smtp: bool, restaurant_inbox: bool } */
 const { requirePin } = require('../_lib/kitchen-auth');
-const { sendCustomerEmail, smtpReady } = require('../_lib/email');
+const { sendCustomerEmail, smtpReady, smtp } = require('../_lib/email');
 
 function sampleOrder(lang, mode, to) {
   const delivery = mode === 'delivery';
@@ -22,7 +22,11 @@ function sampleOrder(lang, mode, to) {
 
 module.exports = async (req, res) => {
   if (!requirePin(req, res)) return;
-  if (req.method === 'GET') return res.status(200).json({ smtp: smtpReady(), restaurant_inbox: !!process.env.ORDER_EMAIL_TO });
+  if (req.method === 'GET') {
+    const c = smtp();
+    return res.status(200).json({ smtp: smtpReady(), host: c.host, port: c.port, user: c.user ? c.user.replace(/^(..).*(@.*)$/, '$1…$2') : '', pass_len: c.pass.length,
+      restaurant_inbox: !!(process.env.ORDER_EMAIL_TO || '').trim() });
+  }
   if (req.method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return res.status(405).json({ error: 'method_not_allowed' }); }
   const b = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(b.to || ''))) return res.status(400).json({ error: 'bad_email' });

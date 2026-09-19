@@ -201,19 +201,29 @@ function renderRestaurantEmail(o, event, extra = {}) {
 
 /* ---------------- transport ---------------- */
 let cachedTransport = null;
-function smtpReady() { return ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'].every(k => process.env[k]); }
+/* Values pasted into the Vercel UI often carry quotes, trailing spaces/newlines or zero-width
+   characters (→ DNS "EBADNAME"), so every SMTP value is cleaned before use. */
+const clean = v => String(v || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/^["']|["']$/g, '').trim();
+const smtp = () => {
+  let host = clean(process.env.SMTP_HOST).replace(/^[a-z]+:\/\//i, '').replace(/[/:].*$/, '').toLowerCase();
+  const port = parseInt(clean(process.env.SMTP_PORT), 10) || (host === 'smtp.gmail.com' ? 465 : 587);
+  const user = clean(process.env.SMTP_USER);
+  const pass = /gmail|google/.test(host) ? clean(process.env.SMTP_PASS).replace(/\s+/g, '') : clean(process.env.SMTP_PASS);  // app passwords are shown with spaces
+  return { host, port, user, pass };
+};
+function smtpReady() { const c = smtp(); return !!(c.host && c.port && c.user && c.pass); }
 function transport() {
   if (cachedTransport) return cachedTransport;
   const nodemailer = require('nodemailer');
   if (process.env.EMAIL_DRY_RUN) return (cachedTransport = nodemailer.createTransport({ jsonTransport: true }));
-  const port = +process.env.SMTP_PORT || 587;
+  const c = smtp();
   return (cachedTransport = nodemailer.createTransport({
-    host: process.env.SMTP_HOST, port, secure: port === 465,
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    host: c.host, port: c.port, secure: c.port === 465,
+    auth: { user: c.user, pass: c.pass },
     connectionTimeout: 8000, greetingTimeout: 8000, socketTimeout: 12000,
   }));
 }
-function from() { return process.env.EMAIL_FROM || `"${MENU.restaurant.name}" <${process.env.SMTP_USER}>`; }
+function from() { const f = clean(process.env.EMAIL_FROM); return f || `"${MENU.restaurant.name}" <${smtp().user}>`; }
 
 async function sendCustomerEmail(o, event, extra) {
   const to = o.customer && o.customer.email;
@@ -222,7 +232,7 @@ async function sendCustomerEmail(o, event, extra) {
   const msg = renderCustomerEmail(o, event, extra);
   if (!msg) return false;
   try {
-    const info = await transport().sendMail({ from: from(), to, replyTo: process.env.ORDER_EMAIL_TO || undefined, subject: msg.subject, html: msg.html, text: msg.text,
+    const info = await transport().sendMail({ from: from(), to, replyTo: clean(process.env.ORDER_EMAIL_TO) || undefined, subject: msg.subject, html: msg.html, text: msg.text,
       headers: { 'X-Kawtar-Order': o.order_no, 'X-Kawtar-Event': event } });
     console.log('email: customer', event, o.order_no, '→', to, info.messageId || 'sent');
     return true;
@@ -230,7 +240,7 @@ async function sendCustomerEmail(o, event, extra) {
 }
 
 async function sendRestaurantEmail(o, event, extra) {
-  const to = process.env.ORDER_EMAIL_TO;
+  const to = clean(process.env.ORDER_EMAIL_TO);
   if (!to) return false;
   if (!smtpReady() && !process.env.EMAIL_DRY_RUN) { console.warn('email: SMTP not configured — restaurant email skipped', event); return false; }
   const msg = renderRestaurantEmail(o, event, extra);
@@ -242,4 +252,4 @@ async function sendRestaurantEmail(o, event, extra) {
   } catch (e) { console.error('email: restaurant send failed', event, e.message); return false; }
 }
 
-module.exports = { renderCustomerEmail, renderRestaurantEmail, sendCustomerEmail, sendRestaurantEmail, smtpReady };
+module.exports = { renderCustomerEmail, renderRestaurantEmail, sendCustomerEmail, sendRestaurantEmail, smtpReady, smtp };
