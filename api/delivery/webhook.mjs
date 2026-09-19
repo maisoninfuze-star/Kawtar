@@ -22,7 +22,8 @@ export async function POST(request) {
   let raw;
   try {
     raw = await request.text();
-    const secret = process.env.UBER_DIRECT_WEBHOOK_SECRET;
+    const { envLoose } = require('../_lib/uber.js');
+    const secret = envLoose('UBER_DIRECT_WEBHOOK_SECRET');
     // Uber signs with either header name (newer: x-uber-signature; legacy: x-postmates-signature)
     const sig = request.headers.get('x-uber-signature') || request.headers.get('x-postmates-signature') || '';
     if (secret) {

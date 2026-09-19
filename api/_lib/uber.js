@@ -25,8 +25,17 @@ const PICKUP = {
   notes: process.env.PICKUP_NOTES || 'Entrée principale — demander la commande au comptoir.',
 };
 
+/* Env lookup tolerant to how the vars get typed in the Vercel UI (Uber_DIRECT_…, UBERDIRECT_…):
+   compares names with case and underscores removed, warns when the spelling is off. */
+const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+function envLoose(name) {
+  if (process.env[name]) return process.env[name];
+  const key = Object.keys(process.env).find(k => norm(k) === norm(name) && process.env[k]);
+  if (key) { console.warn(`env: using ${key} for ${name} — rename it to ${name} in Vercel`); return process.env[key]; }
+  return '';
+}
 function env(name) {
-  const v = process.env[name];
+  const v = envLoose(name);
   if (!v) throw Object.assign(new Error(`missing env ${name}`), { code: 'not_configured', status: 500 });
   return v;
 }
@@ -107,4 +116,4 @@ function sendError(res, err) {
   return res.status(status).json({ error: err.code || 'error', message: err.message, detail: err.detail });
 }
 
-module.exports = { PICKUP, uber, getToken, addressString, phone, isoInMinutes, sendError };
+module.exports = { PICKUP, uber, getToken, addressString, phone, isoInMinutes, sendError, envLoose };
