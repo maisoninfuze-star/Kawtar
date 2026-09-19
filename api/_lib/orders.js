@@ -36,7 +36,7 @@ function fromPI(pi) {
     // quote taken at checkout (valid ~15 min) vs. the courier actually booked at accept time
     uber_quote: m.uber_quote_id ? { id: m.uber_quote_id, fee_cents: +m.uber_fee_cents || 0 } : null,
     uber: m.uber_delivery_id ? { id: m.uber_delivery_id, tracking_url: m.uber_tracking_url, status: m.uber_status,
-                                 fee_cents: +m.uber_fee_cents || 0 } : null,
+                                 eta: m.uber_eta || null, courier: m.uber_courier || null, fee_cents: +m.uber_fee_cents || 0 } : null,
     session_id: m.session_id || null,
     timeline: { paid_at: m.paid_at, accepted_at: m.accepted_at, ready_at: m.ready_at, completed_at: m.completed_at, cancelled_at: m.cancelled_at },
   };

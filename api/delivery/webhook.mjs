@@ -59,6 +59,7 @@ export async function POST(request) {
         const st = String(summary.status || '');
         const patch = { uber_status: st };
         if (d.tracking_url) patch.uber_tracking_url = d.tracking_url;
+        if (d.dropoff_eta) patch.uber_eta = d.dropoff_eta;
         if (d.courier && d.courier.name) patch.uber_courier = d.courier.name;
         if (st === 'pickup_complete' || st === 'dropoff') {
           if (o.status !== 'dispatched' && o.status !== 'delivered') patch.order_status = 'dispatched';

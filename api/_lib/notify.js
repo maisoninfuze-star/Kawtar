@@ -1,9 +1,11 @@
-/* Notifications. One GHL inbound webhook receives every order event with an
-   `event` + `audience` field; a GHL workflow branches on them (SMS owner,
-   SMS/email customer). Optional SMTP email to the restaurant as a second channel.
-     GHL_ORDER_WEBHOOK   GoHighLevel workflow inbound-webhook URL
-     ORDER_EMAIL_TO      (optional) restaurant inbox — uses the SMTP_* vars       */
+/* Notifications — two independent channels, each optional, neither can break an order:
+   1. E-mail we send ourselves (api/_lib/email.js): customer confirmation / ready /
+      en-route with the Uber tracking link / cancelled+refund, and restaurant alerts.
+      Needs SMTP_* (+ ORDER_EMAIL_TO for the restaurant copy).
+   2. GoHighLevel inbound webhook (GHL_ORDER_WEBHOOK): every event is POSTed with
+      `event` + `audience` so a GHL workflow can add SMS on top.                  */
 const { CFG, MENU } = require('./menu');
+const { sendCustomerEmail, sendRestaurantEmail } = require('./email');
 
 const money = c => (c / 100).toFixed(2).replace('.', ',') + ' $';
 
@@ -36,33 +38,16 @@ async function ghl(event, audience, order, extra = {}) {
   } catch (e) { console.error('notify: GHL failed', e.message); return false; }
 }
 
-async function emailRestaurant(order) {
-  const to = process.env.ORDER_EMAIL_TO;
-  const ok = to && ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'].every(k => process.env[k]);
-  if (!ok) return false;
-  try {
-    const nodemailer = require('nodemailer');
-    const t = nodemailer.createTransport({ host: process.env.SMTP_HOST, port: +process.env.SMTP_PORT,
-      secure: +process.env.SMTP_PORT === 465, auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } });
-    const d = describe(order);
-    const rows = (order.cart_lines || []).map(l => `${l.qty}× ${l.fr}${l.note ? ' — ' + l.note : ''}`).join('\n');
-    await t.sendMail({
-      from: `"Commandes — kawtar.ca" <${process.env.SMTP_USER}>`, to,
-      subject: `Commande ${d.order_no} · ${d.mode_fr} · ${d.total}`,
-      text: `${d.mode_fr.toUpperCase()} — ${d.order_no}\n${d.customer_name} · ${d.phone}\n${d.address}\n\n${rows}\n\nSous-total ${d.subtotal} · Livraison ${d.delivery_fee} · Pourboire ${d.tip} · Taxes ${d.taxes}\nTOTAL ${d.total}\n\nNotes: ${d.notes}\n\nÉcran cuisine : ${d.kitchen_url}`,
-    });
-    return true;
-  } catch (e) { console.error('notify: email failed', e.message); return false; }
-}
-
-/* Event helpers */
+/* Event helpers — fan out to every channel; a failed channel only logs. */
+const all = (...ps) => Promise.allSettled(ps).then(r => r.forEach(x => { if (x.status === 'rejected') console.error('notify:', x.reason && x.reason.message); }));
 const notify = {
-  newOrder:   (o) => Promise.all([ghl('order_paid', 'kitchen', o), ghl('order_paid', 'customer', o), emailRestaurant(o)]),
-  accepted:   (o) => ghl('order_accepted', 'customer', o),
-  ready:      (o) => ghl('order_ready', 'customer', o),
-  dispatched: (o) => ghl('order_dispatched', 'customer', o),
-  delivered:  (o) => ghl('order_delivered', 'customer', o),
-  cancelled:  (o, reason) => Promise.all([ghl('order_cancelled', 'customer', o, { reason }), ghl('order_cancelled', 'kitchen', o, { reason })]),
-  uberProblem:(o, detail) => ghl('delivery_problem', 'kitchen', o, { detail }),
+  newOrder:   (o) => all(sendCustomerEmail(o, 'order_paid'), sendRestaurantEmail(o, 'order_paid'), ghl('order_paid', 'kitchen', o), ghl('order_paid', 'customer', o)),
+  accepted:   (o) => all(sendCustomerEmail(o, 'order_accepted'), ghl('order_accepted', 'customer', o)),
+  ready:      (o) => all(sendCustomerEmail(o, 'order_ready'), ghl('order_ready', 'customer', o)),
+  dispatched: (o) => all(sendCustomerEmail(o, 'order_dispatched'), ghl('order_dispatched', 'customer', o)),
+  delivered:  (o) => all(ghl('order_delivered', 'customer', o)),
+  cancelled:  (o, reason) => all(sendCustomerEmail(o, 'order_cancelled', { reason }), sendRestaurantEmail(o, 'order_cancelled', { reason }),
+                                 ghl('order_cancelled', 'customer', o, { reason }), ghl('order_cancelled', 'kitchen', o, { reason })),
+  uberProblem:(o, detail) => all(sendRestaurantEmail(o, 'delivery_problem', { detail }), ghl('delivery_problem', 'kitchen', o, { detail })),
 };
 module.exports = { notify, describe, money };
