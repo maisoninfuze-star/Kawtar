@@ -53,17 +53,28 @@
   .gate form { text-align: center; }
   .gate h1 { font-family: var(--serif); font-weight: 500; color: var(--cream); margin: 0 0 6px; }
   .gate p { color: var(--dim); margin: 0 0 22px; }
-  .gate input { font-size: 30px; letter-spacing: .5em; text-align: center; width: 220px; padding: 12px; border-radius: 12px; border: 1px solid var(--line-strong); background: rgba(255,255,255,.04); color: var(--cream); }
+  .gate form { width: min(320px, 86vw); }
+  .gate input { font-size: 28px; letter-spacing: .4em; text-align: center; width: 100%; padding: 14px 12px; border-radius: 12px; border: 1px solid var(--line-strong); background: rgba(255,255,255,.04); color: var(--cream); }
+  .gate input:focus { outline: none; border-color: var(--gold); background: rgba(201,162,75,.07); }
+  .gate__go { width: 100%; margin-top: 14px; padding: 15px 16px; border-radius: 999px; border: 1px solid var(--gold); background: var(--gold); color: #1c130b; font-family: var(--sans); font-size: 14px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; cursor: pointer; -webkit-appearance: none; }
+  .gate__go:disabled { opacity: .6; cursor: wait; }
   .gate .bad { color: #f0a49c; margin-top: 10px; }
   .snd { display: none; }
   @media (max-width: 980px) { .board { grid-template-columns: 1fr; } }
+  /* Phone POS: header on two rows, buttons in one full-width line (no 4-deep stack) */
+  @media (max-width: 700px) {
+    .kbar { flex-direction: column; align-items: stretch; gap: 10px; padding: 10px 14px; }
+    .kbar > div:last-child { display: flex; gap: 8px; }
+    .kbar > div:last-child button { flex: 1; padding: 10px 4px; font-size: 11px; letter-spacing: .04em; }
+  }
 </style>
 </head>
 <body>
 <div class="gate" data-gate>
   <form data-gate-form>
     <h1>Cuisine Kawtar</h1><p>Entrez le NIP de la cuisine</p>
-    <input type="password" inputmode="numeric" autocomplete="one-time-code" data-pin autofocus>
+    <input type="password" autocomplete="current-password" enterkeyhint="go" data-pin autofocus>
+    <button class="gate__go" type="submit" data-gate-go>Entrer</button>
     <p class="bad" data-gate-err hidden>NIP incorrect</p>
   </form>
 </div>
@@ -76,6 +87,6 @@
   <section class="col"><h2>En préparation <span data-n-prep>0</span></h2><div data-col-prep></div></section>
   <section class="col"><h2>Prêtes / en route <span data-n-ready>0</span></h2><div data-col-ready></div></section>
 </main>
-<script src="./js/kitchen.js?v=1"></script>
+<script src="./js/kitchen.js?v=2"></script>
 </body>
 </html>

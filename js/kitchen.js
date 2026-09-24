@@ -12,9 +12,17 @@
   function unlock(p) { pin = p; try { sessionStorage.setItem('kawtarKitchenPin', p); } catch (e) {} gate.style.display = 'none'; start(); }
   if (pin) unlock(pin);
   $('[data-gate-form]').addEventListener('submit', function (e) {
-    e.preventDefault(); var p = $('[data-pin]').value.trim(); if (!p) return;
-    api('/api/order/list?scope=open', null, p).then(function () { $('[data-gate-err]').hidden = true; unlock(p); })
-      .catch(function () { $('[data-gate-err]').hidden = false; $('[data-pin]').value = ''; });
+    e.preventDefault();
+    var input = $('[data-pin]'), go = $('[data-gate-go]');
+    var p = input.value.trim(); if (!p) { input.focus(); return; }
+    go.disabled = true; go.textContent = 'Vérification…';
+    api('/api/order/list?scope=open', null, p)
+      .then(function () { $('[data-gate-err]').hidden = true; unlock(p); })
+      .catch(function () {
+        $('[data-gate-err]').hidden = false;
+        input.value = ''; input.focus();            // keep the keyboard up on phones
+        go.disabled = false; go.textContent = 'Entrer';
+      });
   });
   $('[data-lock]').addEventListener('click', function () { try { sessionStorage.removeItem('kawtarKitchenPin'); } catch (e) {} location.reload(); });
 
