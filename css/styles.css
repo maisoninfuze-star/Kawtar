@@ -530,6 +530,9 @@ video.story__img { z-index: 1; }
 .visit__brand { position: relative; display: flex; flex-direction: column; align-items: center; gap: 30px; }
 .visit__lockup { width: min(70%, 300px); border-radius: 8px; border: 1px solid rgba(201, 162, 75, .22); }
 .visit__sign { font-size: 12px; color: var(--faint); letter-spacing: .06em; text-align: center; line-height: 1.7; margin: 0; }
+.visit__credit { margin-top: -18px; }
+.visit__credit a { text-decoration: none; transition: color .25s; }
+.visit__credit a:hover { color: var(--gold); }
 
 /* ==========================================================================
    RESERVATION MODAL
